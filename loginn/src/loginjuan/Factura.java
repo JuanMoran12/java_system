@@ -5,13 +5,11 @@
 package loginjuan;
 
 import java.awt.Color;
-import static java.awt.Color.white;
+import java.awt.Font;
+import java.awt.List;
 import java.awt.event.ActionEvent;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,6 +22,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -41,12 +40,29 @@ import javax.swing.table.DefaultTableModel;
  */
 class Factura {
 
-    JFrame ventana7 = new JFrame("Factura");
+    JFrame ventana7 = new JFrame("Sistema de Gestión - Factura");
     JTextField ent_fac2 = new JTextField();
     JTextField ent_direccion = new JTextField(); // Campo para dirección
     JTextField ent_telefono = new JTextField();  // Campo para teléfono
     JTextField ent_fecha = new JTextField();     // Campo para fecha
     Object contenido = new Object();
+    
+    // Color scheme consistent with other JFrames
+    Color color_principal = new Color(52, 73, 94);
+    Color color_secundario = new Color(245, 245, 245);
+    Color color_acento = new Color(41, 128, 185);
+    
+    // Panels for modern structure
+    JPanel panelLateral;
+    JPanel panelCentral;
+    JPanel panelInferior;
+    
+    // Components that need to be accessed globally
+    JButton boton_imprimir;
+    JTextField txtIva;
+    JTextField totalPagar;
+    JLabel etq_iva;
+    JLabel etq_total;
     
     //nombre separado
     String nombre = new String();
@@ -58,27 +74,93 @@ class Factura {
     //monto total de la factura con iva
     String txtfinal = new String();
 
-    public Factura(String var_ced, DefaultTableModel mod_prod, JTable tabla_prod, JScrollPane scroll_prod, JTextField ent_precio_cantidad) throws ClassNotFoundException, SQLException {
-        ventana7.setSize(550, 680);
+    public Factura(String var_ced, Double total, String nombre) {
+        // Main frame setup
+        ventana7.setSize(900, 650);
         ventana7.setLocationRelativeTo(null);
         ventana7.setLayout(null);
-        ventana7.getContentPane().setBackground(Color.white);
+        ventana7.getContentPane().setBackground(color_secundario);
         
-        scroll_prod.setBounds(50, 320, 450, 150);
-        ventana7.add(scroll_prod);
+        ventana7.setVisible(true);
+    }
+    
+    private void setupPanels() {
+        // Left sidebar panel
+        panelLateral = new JPanel();
+        panelLateral.setBounds(0, 0, 250, 700);
+        panelLateral.setBackground(color_principal);
+        panelLateral.setLayout(null);
         
-
-        JPanel panel_sup = new JPanel();
-        panel_sup.setBounds(0, 0, 550, 100);
-        panel_sup.setBackground(Color.BLUE);
-
-        JLabel etq_fac1 = new JLabel("Cédula");
-        etq_fac1.setBounds(50, 120, 150, 30);
+        // Central content panel
+        panelCentral = new JPanel();
+        panelCentral.setBounds(250, 80, 750, 500);
+        panelCentral.setBackground(Color.WHITE);
+        panelCentral.setLayout(null);
+        panelCentral.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199), 1));
+        
+        // Bottom panel for invoice summary
+        panelInferior = new JPanel();
+        panelInferior.setBounds(250, 580, 750, 120);
+        panelInferior.setBackground(Color.WHITE);
+        panelInferior.setLayout(null);
+        panelInferior.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199), 1));
+        
+        // Header panel
+        JPanel panelSuperior = new JPanel();
+        panelSuperior.setBounds(250, 0, 750, 80);
+        panelSuperior.setBackground(color_principal);
+        panelSuperior.setLayout(null);
+        
+        ventana7.add(panelLateral);
+        ventana7.add(panelSuperior);
+        ventana7.add(panelCentral);
+        ventana7.add(panelInferior);
+    }
+    
+    private void setupHeader() {
+        JPanel panelSuperior = (JPanel) ventana7.getComponentAt(250, 0);
+        
+        JLabel tituloFactura = new JLabel("FACTURA DE VENTA");
+        tituloFactura.setBounds(30, 25, 300, 30);
+        tituloFactura.setForeground(Color.WHITE);
+        tituloFactura.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        panelSuperior.add(tituloFactura);
+        
+        // Sidebar title
+        JLabel tituloSistema = new JLabel("SISTEMA DE GESTIÓN");
+        tituloSistema.setBounds(25, 30, 200, 30);
+        tituloSistema.setForeground(Color.WHITE);
+        tituloSistema.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        panelLateral.add(tituloSistema);
+        
+        JPanel separador = new JPanel();
+        separador.setBounds(25, 70, 200, 2);
+        separador.setBackground(Color.WHITE);
+        panelLateral.add(separador);
+    }
+    
+    private void setupClientInfo(String var_ced) throws ClassNotFoundException, SQLException {
+        // Client information section
+        JLabel lblClienteInfo = new JLabel("INFORMACIÓN DEL CLIENTE");
+        lblClienteInfo.setBounds(30, 20, 300, 25);
+        lblClienteInfo.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        lblClienteInfo.setForeground(color_principal);
+        panelCentral.add(lblClienteInfo);
+        
+        JLabel etq_fac1 = new JLabel("Cédula:");
+        etq_fac1.setBounds(30, 60, 100, 25);
+        etq_fac1.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        etq_fac1.setForeground(color_principal);
+        panelCentral.add(etq_fac1);
 
         JTextField ent_fac1 = new JTextField();
-        ent_fac1.setBounds(150, 120, 120, 30);
+        ent_fac1.setBounds(140, 60, 150, 30);
         ent_fac1.setText(var_ced);
         ent_fac1.setEditable(false);
+        ent_fac1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        ent_fac1.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199)));
+        ent_fac1.setBackground(color_secundario);
+        panelCentral.add(ent_fac1);
         
         // Carga datos del cliente si existe la cédula
         if (!var_ced.isEmpty()) {
@@ -104,45 +186,118 @@ class Factura {
                 System.out.println(nombre + " " + apellido);
             }
         }
-        JLabel etq_nombre = new JLabel("Nombre");
-        etq_nombre.setBounds(50, 160, 150, 30);
+        
+        // Client name field
+        JLabel etq_nombre = new JLabel("Nombre:");
+        etq_nombre.setBounds(320, 60, 100, 25);
+        etq_nombre.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        etq_nombre.setForeground(color_principal);
+        panelCentral.add(etq_nombre);
 
-        ent_fac2.setBounds(150, 160, 120, 30);
+        ent_fac2.setBounds(430, 60, 200, 30);
         ent_fac2.setEditable(false);
+        ent_fac2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        ent_fac2.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199)));
+        ent_fac2.setBackground(color_secundario);
+        panelCentral.add(ent_fac2);
 
-        JLabel etq_direccion = new JLabel("Dirección");
-        etq_direccion.setBounds(50, 200, 150, 30);
+        // Address field
+        JLabel etq_direccion = new JLabel("Dirección:");
+        etq_direccion.setBounds(30, 100, 100, 25);
+        etq_direccion.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        etq_direccion.setForeground(color_principal);
+        panelCentral.add(etq_direccion);
 
-        ent_direccion.setBounds(150, 200, 120, 30);
+        ent_direccion.setBounds(140, 100, 200, 30);
         ent_direccion.setEditable(false);
+        ent_direccion.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        ent_direccion.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199)));
+        ent_direccion.setBackground(color_secundario);
+        panelCentral.add(ent_direccion);
 
-        JLabel etq_telefono = new JLabel("Teléfono");
-        etq_telefono.setBounds(50, 240, 150, 30);
+        // Phone field
+        JLabel etq_telefono = new JLabel("Teléfono:");
+        etq_telefono.setBounds(370, 100, 100, 25);
+        etq_telefono.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        etq_telefono.setForeground(color_principal);
+        panelCentral.add(etq_telefono);
 
-        ent_telefono.setBounds(150, 240, 120, 30);
+        ent_telefono.setBounds(480, 100, 150, 30);
         ent_telefono.setEditable(false);
+        ent_telefono.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        ent_telefono.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199)));
+        ent_telefono.setBackground(color_secundario);
+        panelCentral.add(ent_telefono);
 
-        JLabel etq_fecha = new JLabel("Fecha");
-        etq_fecha.setBounds(50, 280, 150, 30);
+        // Date field
+        JLabel etq_fecha = new JLabel("Fecha:");
+        etq_fecha.setBounds(30, 140, 100, 25);
+        etq_fecha.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        etq_fecha.setForeground(color_principal);
+        panelCentral.add(etq_fecha);
 
         LocalDate fechaActual = LocalDate.now();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         ent_fecha.setText(fechaActual.format(formato));
-        ent_fecha.setBounds(150, 280, 120, 30);
-        ent_fecha.setEditable(false); 
+        ent_fecha.setBounds(140, 140, 150, 30);
+        ent_fecha.setEditable(false);
+        ent_fecha.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        ent_fecha.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199)));
+        ent_fecha.setBackground(color_secundario);
+        panelCentral.add(ent_fecha);
+    }
+    
+    private void setupProductsTable(JScrollPane scroll_prod) {
+        JLabel lblProductos = new JLabel("PRODUCTOS SELECCIONADOS");
+        lblProductos.setBounds(30, 180, 300, 25);
+        lblProductos.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        lblProductos.setForeground(color_principal);
+        panelCentral.add(lblProductos);
+        
+        scroll_prod.setBounds(30, 210, 690, 200);
+        scroll_prod.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199), 1));
+        panelCentral.add(scroll_prod);
+    }
+    
+    private void setupPaymentSection(JTextField ent_precio_cantidad, String var_ced, DefaultTableModel mod_prod) {
+        JLabel lblPago = new JLabel("INFORMACIÓN DE PAGO");
+        lblPago.setBounds(30, 420, 300, 25);
+        lblPago.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        lblPago.setForeground(color_principal);
+        panelCentral.add(lblPago);
         
         JLabel etq_metodoPago = new JLabel("Método de Pago:");
-        etq_metodoPago.setBounds(30, 500, 150, 30);
-        ventana7.add(etq_metodoPago);
+        etq_metodoPago.setBounds(30, 450, 150, 25);
+        etq_metodoPago.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        etq_metodoPago.setForeground(color_principal);
+        panelCentral.add(etq_metodoPago);
 
-        drop_metodo.setBounds(130, 500, 120, 30);
-        ventana7.add(drop_metodo);
+        drop_metodo.setBounds(180, 450, 150, 30);
+        drop_metodo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        drop_metodo.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199)));
+        panelCentral.add(drop_metodo);
         
-        ent_precio_cantidad.setBounds(300, 500, 100, 30);
+        JLabel etq_subtotal = new JLabel("Subtotal:");
+        etq_subtotal.setBounds(370, 450, 100, 25);
+        etq_subtotal.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        etq_subtotal.setForeground(color_principal);
+        panelCentral.add(etq_subtotal);
+        
+        ent_precio_cantidad.setBounds(470, 450, 120, 30);
         ent_precio_cantidad.setEditable(false);
+        ent_precio_cantidad.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        ent_precio_cantidad.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199)));
+        ent_precio_cantidad.setBackground(color_secundario);
+        panelCentral.add(ent_precio_cantidad);
         
-        JButton pagar = new JButton("Pagar");
-        pagar.setBounds(410, 500, 100, 30);
+        JButton pagar = new JButton("PROCESAR PAGO");
+        pagar.setBounds(600, 450, 120, 35);
+        pagar.setBackground(color_acento);
+        pagar.setForeground(Color.WHITE);
+        pagar.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        pagar.setFocusPainted(false);
+        pagar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        panelCentral.add(pagar);
         
         pagar.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -154,24 +309,52 @@ class Factura {
                 }
             }
         });
-
-        // Agrega componentes a la ventana
-        ventana7.add(panel_sup);
-        ventana7.add(etq_fac1);
-        ventana7.add(ent_fac1);
-        ventana7.add(etq_nombre);
-        ventana7.add(ent_fac2);
-        ventana7.add(etq_direccion);
-        ventana7.add(ent_direccion);
-        ventana7.add(etq_telefono);
-        ventana7.add(ent_telefono);
-        ventana7.add(etq_fecha);
-        ventana7.add(ent_fecha);
-        ventana7.add(pagar);
-        ventana7.add(ent_precio_cantidad);
-
-        ventana7.setVisible(true);
+    }
     
+    private void setupInvoiceSummary() {
+        // Initially hidden invoice summary components
+        etq_iva = new JLabel("IVA (16%):");
+        etq_iva.setBounds(30, 20, 100, 25);
+        etq_iva.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        etq_iva.setForeground(color_principal);
+        etq_iva.setVisible(false);
+        panelInferior.add(etq_iva);
+
+        txtIva = new JTextField();
+        txtIva.setBounds(140, 20, 120, 30);
+        txtIva.setEditable(false);
+        txtIva.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        txtIva.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199)));
+        txtIva.setBackground(color_secundario);
+        txtIva.setVisible(false);
+        panelInferior.add(txtIva);
+
+        etq_total = new JLabel("Total a Pagar:");
+        etq_total.setBounds(300, 20, 120, 25);
+        etq_total.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        etq_total.setForeground(color_principal);
+        etq_total.setVisible(false);
+        panelInferior.add(etq_total);
+
+        totalPagar = new JTextField();
+        totalPagar.setBounds(430, 20, 150, 35);
+        totalPagar.setEditable(false);
+        totalPagar.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        totalPagar.setBorder(BorderFactory.createLineBorder(color_acento, 2));
+        totalPagar.setBackground(Color.WHITE);
+        totalPagar.setForeground(color_acento);
+        totalPagar.setVisible(false);
+        panelInferior.add(totalPagar);
+        
+        boton_imprimir = new JButton("IMPRIMIR FACTURA");
+        boton_imprimir.setBounds(600, 20, 140, 35);
+        boton_imprimir.setBackground(new Color(39, 174, 96));
+        boton_imprimir.setForeground(Color.WHITE);
+        boton_imprimir.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        boton_imprimir.setFocusPainted(false);
+        boton_imprimir.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        boton_imprimir.setVisible(false);
+        panelInferior.add(boton_imprimir);
     }
 
     public void Ventas(ActionEvent e, String var_ced, JTextField ent_direccion, JTextField ent_telefono, Object contenido, DefaultTableModel mod_prod, JTextField ent_precio_cantidad, JComboBox drop_metodo) throws SQLException {
@@ -236,35 +419,22 @@ class Factura {
                     
                     System.out.println("precio total con iva: "+ precio_iva);
                     
-                    JButton boton_imprimir = new JButton("Imprimir Factura");
-                    boton_imprimir.setBounds(350, 550, 150, 30);
-                    ventana7.add(boton_imprimir);
-                    
-                    JLabel etq_iva = new JLabel("IVA:");
-                    etq_iva.setBounds(30, 550, 50, 30);
-                    ventana7.add(etq_iva);
-
-                    JTextField txtIva = new JTextField();
-                    txtIva.setBounds(160, 550, 80, 30);
-                    txtIva.setEditable(false);
-                    
+                    // Show invoice summary components that were pre-created
                     DecimalFormat df = new DecimalFormat("#.00");
                     String txtivita = df.format(precio_iva);
-                    txtivita = Double.toString(precio_iva);
                     txtIva.setText(txtivita);
-                    ventana7.add(txtIva);
+                    etq_iva.setVisible(true);
+                    txtIva.setVisible(true);
 
-                    JLabel etq_total = new JLabel("Total a pagar:");
-                    etq_total.setBounds(30, 590, 120, 30);                    
-                    ventana7.add(etq_total);
-
-                    JTextField totalPagar = new JTextField();
-                    totalPagar.setBounds(160, 590, 100, 30);
-                    totalPagar.setEditable(false);
-                    txtfinal = Double.toString(precio_con_iva);
-                    totalPagar.setText(txtfinal); 
-                    ventana7.add(totalPagar);
+                    txtfinal = df.format(precio_con_iva);
+                    totalPagar.setText("$" + txtfinal);
+                    etq_total.setVisible(true);
+                    totalPagar.setVisible(true);
+                    boton_imprimir.setVisible(true);
                     
+                    // Refresh the display
+                    panelInferior.revalidate();
+                    panelInferior.repaint();
                     ventana7.revalidate();
                     ventana7.repaint();
                    

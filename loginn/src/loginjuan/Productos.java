@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -23,7 +22,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
@@ -33,7 +31,6 @@ import javax.swing.table.DefaultTableModel;
  */
 class Productos {
     JPanel panelCentral = new JPanel();
-        //color personalizado de la clase Color
     Color rojo_transparente = new Color(22, 109, 99); // Rojo semi-transparente
     Color azul_oscuro = new Color(40, 53, 96);
     Color azul_claro = new Color(176, 206, 255);
@@ -59,7 +56,6 @@ class Productos {
     //entrada para aceptar la cantidad
     JTextField ent_cant = new JTextField();
     
-    //variable para cantidad, declarada como atributo de la clase public para acceder desde cualquier otra clase o metodo
     public String cantidad;
     public String leer_nom;
     public String codigo_prod;
@@ -96,9 +92,10 @@ class Productos {
     ArrayList<Double> listaPreciosTotales = new ArrayList<>();
     JTextField ent_precio_cantidad = new JTextField();
     
-    //variables para el metodo de insertar en el carrito
     String ced_carrito = new String();
-    String cod_carrito = new String();    
+    String cod_carrito = new String();   
+    
+    ArrayList<Double> listaProductos = new ArrayList<>();
     
     public Productos(String cedula_del_cliente) {
         
@@ -117,7 +114,6 @@ class Productos {
         panelLateral.setLayout(null);
         ventana6.add(panelLateral);
         
-        // Panel central para el contenido
         panelCentral.setBounds(250, 0, 650, 650);
         panelCentral.setBackground(new Color(245, 245, 245));
         panelCentral.setLayout(null);
@@ -266,6 +262,9 @@ class Productos {
             //clase connection para conectar con la url
             conBD2 = DriverManager.getConnection("jdbc:sqlite:c:ventasdb.db");
             conBD2.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+            // Configurar para evitar bloqueos
+            conBD2.createStatement().execute("PRAGMA busy_timeout = 5000;");
+            conBD2.createStatement().execute("PRAGMA journal_mode = WAL;");
 
             // Use parameterized query to prevent SQL injection
             String consulta2 = "SELECT * FROM productos WHERE nom_prod = ?";
@@ -349,7 +348,7 @@ class Productos {
             modelo.addColumn("Stock");
 
             Class.forName("org.sqlite.JDBC");
-            conBD3 = DriverManager.getConnection("jdbc:sqlite:c:/Users/Lenovo/Downloads/coding/java/java_clase/ventasdb.db");
+            conBD3 = DriverManager.getConnection("jdbc:sqlite:c:ventasdb.db");
             conBD3.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             consulta_buscar2 = conBD3.createStatement();
             String consulta3 = "SELECT * FROM productos";
@@ -444,120 +443,13 @@ public void AceptarCantidad(){
         try {
             insertarEnCarrito(var_ced, nuevo_cod, cant);
         } catch (ClassNotFoundException | SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
     }
     
 public void insertarEnCarrito(String cedula, String codigoProducto, String cantidad) throws SQLException, ClassNotFoundException {
     
-    System.out.println("cedula: "+ cedula + " codigo: " + codigoProducto + " cantidad: "+ cantidad);
-
-    Connection con_cant = null;
-    PreparedStatement int_cant = null;
-    PreparedStatement pst_producto = null;
-    ResultSet rs_producto = null;
-
-    if (cantidad.isEmpty()){
-        JOptionPane.showMessageDialog(null, "Por favor, ingrese una cantidad.");
-        return;
-    }
-    
-    try {
-        Class.forName("org.sqlite.JDBC");
-        con_cant = DriverManager.getConnection("jdbc:sqlite:c:ventasdb.db");
-        
-        // Set timeout to avoid waiting indefinitely for locked database
-        con_cant.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
-
-        // Insertar en la base de datos
-        int_cant = con_cant.prepareStatement("INSERT INTO carrito(car_ced, car_pro, car_can) VALUES(?,?,?)");
-    
-        int_cant.setString(1, cedula);
-        int_cant.setString(2, codigoProducto);
-        int_cant.setString(3, cantidad);
-    
-        int filas_actualizadas = int_cant.executeUpdate();
-        
-        if (filas_actualizadas > 0) {
-            // Agregar la fila al JTable del carrito
-            String[] filas3 = new String[3];
-            filas3[0] = cedula;
-            //filas3[1] = codigoProducto + " - " + ent_nom.getText();
-            filas3[1] = codigoProducto;
-            filas3[2] = cantidad;
-            
-            // Verificar si el modelo tiene las columnas necesarias
-            if (modelo2.getColumnCount() == 0) {
-                modelo2.addColumn("Cliente");
-                modelo2.addColumn("Producto");
-                modelo2.addColumn("Cantidad");
-            }
-            
-            modelo2.addRow(filas3);
-            tabla2.setModel(modelo2);
-            
-            // Actualizar la visualización de la tabla
-            tabla2.revalidate();
-            tabla2.repaint();
-            
-            System.out.println("Producto agregado al carrito y a la tabla visual");
-        } else {
-            System.out.println("Registro mal agregado");
-            JOptionPane.showMessageDialog(null, "Error al agregar el producto al carrito.");
-        } 
-    } catch (SQLException ex) {
-        Logger.getLogger(Productos.class.getName()).log(Level.SEVERE, null, ex);
-        JOptionPane.showMessageDialog(null, "Error de base de datos: " + ex.getMessage());
-    } finally {
-        // Always close resources in finally block
-        if (rs_producto != null) try { rs_producto.close(); } catch (SQLException e1) { }
-        if (pst_producto != null) try { pst_producto.close(); } catch (SQLException e1) { }
-        if (int_cant != null) try { int_cant.close(); } catch (SQLException e1) { }
-        if (con_cant != null) try { con_cant.close(); } catch (SQLException e1) { }
-    }
-    
-    // Configurar la tabla del carrito en el método AceptarCantidad
-    scrollPane2.setBounds(30, 400, 590, 150);
-    scrollPane2.setBorder(javax.swing.BorderFactory.createTitledBorder(
-        javax.swing.BorderFactory.createLineBorder(new Color(52, 73, 94), 1),
-        "Carrito de Compras",
-        javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-        javax.swing.border.TitledBorder.DEFAULT_POSITION,
-        new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14),
-        new Color(52, 73, 94)));
-    
-    // Mejorar el estilo de la tabla del carrito
-    tabla2.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
-    tabla2.setRowHeight(25);
-    tabla2.getTableHeader().setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
-    tabla2.getTableHeader().setBackground(color_principal);
-    tabla2.getTableHeader().setForeground(color_secundario);
-    tabla2.setGridColor(new Color(230, 230, 230));
-    tabla2.setSelectionBackground(new Color(213, 245, 227));
-    
-    // Agregar la tabla al panel central en lugar de a la ventana directamente
-    panelCentral.add(scrollPane2);
-
-    int opcion = JOptionPane.showConfirmDialog(ventana6, "¿Desea agregar otro producto?", "Agregar Producto", JOptionPane.YES_NO_OPTION);
-
-    if (opcion == JOptionPane.NO_OPTION) {
-        ObtenerFilas();
-        System.out.println("aqui se dice noooooo");
-    
-    } else {
-        ent_cant.setText("");
-        ent_nom.setText("");
-        ent_codigo.setText("");
-        ent_pre.setText("");
-        ent_exi.setText("");
-        
-        codigo_prod = ""; 
-        
-        tabla2.revalidate();
-        tabla2.repaint();
-    }
-
     JButton boton_eliminar = new JButton("Eliminar");
     boton_eliminar.setBounds(130, 560, 190, 40);
     boton_eliminar.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
@@ -584,10 +476,141 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
     boton_pagar.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
     boton_pagar.setFocusPainted(false);
     panelCentral.add(boton_pagar);
+
+    boton_pagar.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            SumarFacturar();
+        }
+    });
     
-    ventana6.revalidate();
+    System.out.println("cedula: "+ cedula + " codigo: " + codigoProducto + " cantidad: "+ cantidad);
+
+    Connection con_cant = null;
+    PreparedStatement int_cant = null;
+    PreparedStatement pst_producto = null;
+    ResultSet rs_producto = null;
+
+    if (cantidad.isEmpty()){
+        JOptionPane.showMessageDialog(null, "Por favor, ingrese una cantidad.");
+        return;
+    }
+    // Configurar la tabla del carrito en el método AceptarCantidad
+    scrollPane2.setBounds(30, 400, 590, 150);
+    scrollPane2.setBorder(javax.swing.BorderFactory.createTitledBorder(
+        javax.swing.BorderFactory.createLineBorder(new Color(52, 73, 94), 1),
+        "Carrito de Compras",
+        javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+        javax.swing.border.TitledBorder.DEFAULT_POSITION,
+        new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14),
+        new Color(52, 73, 94)));
+    
+    // Mejorar el estilo de la tabla del carrito
+    tabla2.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
+    tabla2.setRowHeight(25);
+    tabla2.getTableHeader().setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
+    tabla2.getTableHeader().setBackground(color_principal);
+    tabla2.getTableHeader().setForeground(color_secundario);
+    tabla2.setGridColor(new Color(230, 230, 230));
+    tabla2.setSelectionBackground(new Color(213, 245, 227));
+    
+    // Agregar la tabla al panel central en lugar de a la ventana directamente
+    panelCentral.add(scrollPane2);
+    
+    try {
+        //String pre = ent_pre.getText();
+        //SumarFacturar(pre, cantidad);
+
+        Double subtotal = Double.parseDouble(precio) * Integer.parseInt(cantidad);
+        Double impuesto = subtotal * 0.16;
+        Double total = subtotal + impuesto;
+        
+        listaProductos.add(total);
+        System.out.println("producto agregado a la lista " + total + "lista: " + listaProductos);
+
+        Class.forName("org.sqlite.JDBC");
+        // Corregir la ruta de la base de datos para asegurar que sea la correcta
+        con_cant = DriverManager.getConnection("jdbc:sqlite:c:/Users/Lenovo/Downloads/coding/java/java_clase/ventasdb.db");
+        
+        // Configurar para evitar bloqueos de base de datos con tiempos de espera más largos
+        // IMPORTANTE: Configurar PRAGMA antes de cambiar autoCommit
+        Statement stmt = con_cant.createStatement();
+        stmt.execute("PRAGMA busy_timeout = 10000;"); // Aumentar el tiempo de espera a 10 segundos
+        stmt.execute("PRAGMA journal_mode = WAL;"); // Write-Ahead Logging para mejor concurrencia
+        stmt.execute("PRAGMA synchronous = NORMAL;"); // Reducir la sincronización con el disco
+        stmt.execute("PRAGMA locking_mode = NORMAL;"); // Optimizar el manejo de bloqueos
+        stmt.execute("PRAGMA cache_size = 5000;"); // Aumentar el tamaño de la caché
+        stmt.close();
+        
+        // Configuraciones mejoradas para evitar bloqueos de base de datos
+        con_cant.setAutoCommit(false); // Desactivar autocommit para manejar la transacción manualmente
+
+        // Insertar en la base de datos
+        int_cant = con_cant.prepareStatement("INSERT INTO carrito(car_ced, car_pro, car_can) VALUES(?,?,?)");
+    
+        int_cant.setString(1, cedula);
+        int_cant.setString(2, codigoProducto);
+        int_cant.setString(3, cantidad);
+    
+        int filas_actualizadas = int_cant.executeUpdate();
+        con_cant.commit(); // Confirmar la transacción
+        
+        if (filas_actualizadas > 0) {
+            // Agregar la fila al JTable del carrito
+            String[] filas3 = new String[3];
+            filas3[0] = cedula;
+            //filas3[1] = codigoProducto + " - " + ent_nom.getText();
+            filas3[1] = codigoProducto;
+            filas3[2] = cantidad;
+            
+            // Verificar si el modelo tiene las columnas necesarias
+            if (modelo2.getColumnCount() == 0) {
+                modelo2.addColumn("Cliente");
+                modelo2.addColumn("Producto");
+                modelo2.addColumn("Cantidad");
+            }
+            
+            modelo2.addRow(filas3);
+            tabla2.setModel(modelo2);
+
+            ent_cant.setText("");
+            ent_nom.setText("");
+            ent_codigo.setText("");
+            ent_pre.setText("");
+            ent_exi.setText("");
+            
+            codigo_prod = ""; 
+            
+            tabla2.revalidate();
+            tabla2.repaint();
+            
+            System.out.println("Producto agregado al carrito y a la tabla visual");
+
+        } else {
+            System.out.println("Registro mal agregado");
+            JOptionPane.showMessageDialog(null, "Error al agregar el producto al carrito.");
+        } 
+    } catch (SQLException ex) {
+        // En caso de error, hacer rollback de la transacción
+        if (con_cant != null) {
+            try {
+                con_cant.rollback();
+            } catch (SQLException e) {
+                Logger.getLogger(Productos.class.getName()).log(Level.SEVERE, "Error al hacer rollback", e);
+            }
+        }
+        Logger.getLogger(Productos.class.getName()).log(Level.SEVERE, null, ex);
+        JOptionPane.showMessageDialog(null, "Error de base de datos: " + ex.getMessage());
+    } finally {
+        // Always close resources in finally block
+        if (rs_producto != null) try { rs_producto.close(); } catch (SQLException e1) { }
+        if (pst_producto != null) try { pst_producto.close(); } catch (SQLException e1) { }
+        if (int_cant != null) try { int_cant.close(); } catch (SQLException e1) { }
+        if (con_cant != null) try { con_cant.close(); } catch (SQLException e1) { }
+    }
+    /*ventana6.revalidate();
     ventana6.repaint();
-    ventana6.setVisible(true);   
+    ventana6.setVisible(true);  */ 
 }
 
 public void Eliminar() {
@@ -641,93 +664,18 @@ public void Eliminar() {
             }
         }
     }
-}
-
-private void ObtenerFilas() throws ClassNotFoundException, SQLException {
-    
-    mod_prod.addColumn("Codigo");
-    mod_prod.addColumn("Producto");
-    mod_prod.addColumn("Cantidad");
-    mod_prod.addColumn("Precio");
-
-    tabla_prod.setBackground(Color.WHITE);
-    scroll_prod.setBackground(Color.white);
-    
-    int  cantidad_filas = modelo2.getRowCount();
-
-    List<String[]> filas = new ArrayList<>();
-
-    for (int i = 0; i < cantidad_filas; i++) {
-        String cedula = modelo2.getValueAt(i, 0).toString(); 
-        String producto = modelo2.getValueAt(i, 1).toString(); 
-        String cantidad_fila = modelo2.getValueAt(i, 2).toString(); 
-        
-        filas.add(new String[]{cedula, producto, cantidad_fila});
     }
 
-List<String> fila_id = new ArrayList<>();
+public void SumarFacturar(){
 
-for (int i = 0; i < filas.size(); i++) {
-    System.out.println(i);
-    String[] fila = filas.get(i);
-
-    System.out.println("Cédula: " + fila[0] + ", Producto: " + fila[1] + ", Cantidad: " + fila[2]);
-            
-    fila_id.add(fila[1]);
-
-}
-for (int i = 0; i < fila_id.size(); i++) {
-    System.out.println("valor de: " + i);
-    String id_prod = fila_id.get(i);
-    System.out.println("ID almacenado: " + id_prod);
-    
-    Class.forName("org.sqlite.JDBC");
-    Connection ConBD_id = DriverManager.getConnection("jdbc:sqlite:c:ventasdb.db");
-    Statement consulta_precio = ConBD_id.createStatement();
-    String precio_prod = "SELECT nom_prod, pre_prod FROM productos WHERE id_prod = \"" + id_prod +"\"";
-    ResultSet id_codigo = consulta_precio.executeQuery(precio_prod);
-
-    String[] filas2 = new String[6];
-    
-    while (id_codigo.next()) {
-        String prec_str = id_codigo.getString("pre_prod");
-
-        double prec = Double.parseDouble(prec_str);
-        // Usar la cantidad de la fila actual en lugar de la variable global
-        String cantidad_actual = filas.get(i)[2];
-        int cantidad_num = Integer.parseInt(cantidad_actual);
-
-        // calcula el precio total
-        double precio_total = prec * cantidad_num;
-        
-        listaPreciosTotales.add(precio_total);
-        
-        filas2[0] = id_codigo.getString(1);
-        filas2[1] = id_codigo.getString(2);
-
-        System.out.println("precio del producto: " + filas2[0] + ", nombre del producto: " + filas2[1] + ", cantidad: " + cantidad_actual);
-        String nombrecito = filas2[0];            
-
-        String[] fila_ultima = {id_prod, nombrecito, cantidad_actual, prec_str};
-        mod_prod.addRow(fila_ultima);
-        
         double sumaTotal = 0.0;
-        
-        /*for (int i = 0; i < listaPreciosTotales.size(); i++) {
-sumaTotal += listaPreciosTotales.get(i);
-}*/
-
-        for (double precio : listaPreciosTotales) {
-            sumaTotal += precio; 
+        for (Double numero : listaProductos) {
+            sumaTotal = sumaTotal + numero;
         }
 
-        System.out.println("La suma total de todos los precios es: " + sumaTotal);
-        
-        String tex_precio = Double.toString(sumaTotal);
-        ent_precio_cantidad.setText(tex_precio);
-                    
-        Factura llamar_factura = new Factura(var_ced, mod_prod, tabla_prod, scroll_prod, ent_precio_cantidad);
-    }
+        String nombre_cliente = ent_nom.getText();
+        System.out.println("La suma de la lista es: " + sumaTotal + " al cliente: " + nombre_cliente);
+        Factura fac = new Factura(var_ced, sumaTotal, nombre_cliente);
 }
-}
+
 }
