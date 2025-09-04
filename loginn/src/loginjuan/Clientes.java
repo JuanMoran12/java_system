@@ -287,10 +287,14 @@ class Clientes {
                 boton_producto.setFocusPainted(false);
                 buttonPanel.add(boton_producto);
 
+                buttonPanel.revalidate();
+                buttonPanel.repaint();
+
                 boton_producto.addActionListener(new java.awt.event.ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        Productos ced_var = new Productos(ent_cedula.getText());
+                        //String nombre_cliente = ent_cliente.getText();
+                        Productos ced_var = new Productos(ent_cedula.getText(), ent_cliente.getText());
                         try {
                             ced_var.MostrarProductos();
                         } catch (SQLException e1) {
@@ -436,7 +440,8 @@ class Clientes {
     }
     
     public void productos(ActionEvent e) throws ClassNotFoundException, SQLException {
-        Productos llamar_productos2 = new Productos(cedula_del_cliente);
+        String nombre_cliente = ent_cliente.getText();
+        Productos llamar_productos2 = new Productos(cedula_del_cliente, nombre_cliente);
         llamar_productos2.MostrarProductos();
     }
     

@@ -62,6 +62,7 @@ class Productos {
     
     //cedula del cliente
     public String var_ced;
+    public String var_nom;
     
     // Configuración inicial de la tabla del carrito
     DefaultTableModel modelo2 = new DefaultTableModel();
@@ -89,17 +90,21 @@ class Productos {
     String prec = new String();  
     
     //precio total
-    ArrayList<Double> listaPreciosTotales = new ArrayList<>();
     JTextField ent_precio_cantidad = new JTextField();
     
     String ced_carrito = new String();
     String cod_carrito = new String();   
     
+    ArrayList<Double> listaPrecios = new ArrayList<>();
+    ArrayList<Double> listaSubtotal = new ArrayList<>();
+    ArrayList<Double> listaImpuesto = new ArrayList<>();
+    ArrayList<Integer> listaCantidades = new ArrayList<>();
     ArrayList<Double> listaProductos = new ArrayList<>();
-    
-    public Productos(String cedula_del_cliente) {
+
+    public Productos(String cedula_del_cliente, String nombre_del_cliente) {
         
-        var_ced = cedula_del_cliente;       
+        var_ced = cedula_del_cliente;   
+        var_nom = nombre_del_cliente;    
         System.out.println(var_ced);
                 
         ventana6.setSize(900, 650);
@@ -477,6 +482,9 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
     boton_pagar.setFocusPainted(false);
     panelCentral.add(boton_pagar);
 
+    panelCentral.revalidate();
+    panelCentral.repaint();
+
     boton_pagar.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -525,6 +533,8 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
         Double impuesto = subtotal * 0.16;
         Double total = subtotal + impuesto;
         
+        listaPrecios.add(Double.parseDouble(precio));
+        listaCantidades.add(Integer.parseInt(cantidad));
         listaProductos.add(total);
         System.out.println("producto agregado a la lista " + total + "lista: " + listaProductos);
 
@@ -673,9 +683,25 @@ public void SumarFacturar(){
             sumaTotal = sumaTotal + numero;
         }
 
-        String nombre_cliente = ent_nom.getText();
-        System.out.println("La suma de la lista es: " + sumaTotal + " al cliente: " + nombre_cliente);
-        Factura fac = new Factura(var_ced, sumaTotal, nombre_cliente);
+        System.out.println("La suma de la lista es: " + sumaTotal + " al cliente: " + var_nom);
+        Factura fac = new Factura(var_ced, sumaTotal, var_nom);
+        fac.mostrar();
+        for (double iterable_element : listaProductos) {
+            System.out.println(iterable_element);
+        }
+
+        for (double precio : listaPrecios) {
+            System.out.println(precio);
+        }
+        for (int cantidad : listaCantidades) {
+            System.out.println(cantidad);
+        }
+
+        for (int i = 0; i < listaPrecios.size(); i++) {
+            fac.agregarLinea("Item " + (i+1) + " - Descripción", listaPrecios.get(i), listaCantidades.get(i), listaProductos.get(i));
+        }
+        // recalcula totales (puedes pasar IVA 0.0, 0.16, etc.)
+        fac.recalcularTotales(0.00); 
 }
 
 }

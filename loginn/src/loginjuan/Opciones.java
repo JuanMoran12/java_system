@@ -175,7 +175,7 @@ class Opciones {
         Clientes llamar_clientes = new Clientes(Azul, opciones);
     }
     public void productos(ActionEvent e) throws ClassNotFoundException, SQLException {
-        Productos llamar_productos = new Productos(cli);
+        Productos llamar_productos = new Productos(cli, "");
         llamar_productos.MostrarProductos();
     }
     
