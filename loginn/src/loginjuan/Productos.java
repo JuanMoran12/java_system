@@ -243,7 +243,8 @@ class Productos {
 
             }
         });
-        yPos += 45;  
+        // Sección de cantidad y carrito
+        yPos += 45;  // Espacio después del botón buscar
         JLabel etq_cant = new JLabel("Cantidad");
         etq_cant.setBounds(20, yPos, 260, 20);
         etq_cant.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
@@ -257,6 +258,7 @@ class Productos {
             javax.swing.BorderFactory.createEmptyBorder(2, 5, 2, 5)));
         panelLateral.add(ent_cant);
         
+        // Botón Agregar al Carrito
         JButton boton_aceptar = new JButton("Agregar");
         boton_aceptar.setBounds(150, yPos + 18, 130, 30);
         boton_aceptar.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
@@ -342,6 +344,7 @@ class Productos {
                     ent_pre.setText(filas2[2]);
                     ent_exi.setText(filas2[3]);
 
+                    JOptionPane.showMessageDialog(null, "Producto no encontrado");
                 }
             }
         } catch (Exception e) {
@@ -548,6 +551,7 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
     comboMetodoPago.addItem("Transferencia");
     comboMetodoPago.setSelectedIndex(0);
     
+    // Botón Pagar más pequeño
     JButton boton_pagar = new JButton("Pagar");
     boton_pagar.setBounds(340, 10, 150, 35);
     boton_pagar.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
@@ -557,6 +561,7 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
     boton_pagar.setFocusPainted(false);
     boton_pagar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
     
+    // Efecto hover para el botón pagar
     boton_pagar.addMouseListener(new java.awt.event.MouseAdapter() {
         public void mouseEntered(java.awt.event.MouseEvent evt) {
             boton_pagar.setBackground(new Color(39, 174, 96));
@@ -581,7 +586,8 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
         @Override
         public void actionPerformed(ActionEvent e) {
             String metodoPago = (String)comboMetodoPago.getSelectedItem();
-
+            // Aquí puedes usar el método de pago seleccionado si es necesario
+            // Por ejemplo, pasarlo a la función SumarFacturar()
             SumarFacturar(metodoPago);
         }
     });
@@ -607,6 +613,7 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
         new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14),
         new Color(52, 73, 94)));
     
+    // Mejorar el estilo de la tabla del carrito
     tabla2.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
     tabla2.setRowHeight(25);
     tabla2.getTableHeader().setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
@@ -615,6 +622,7 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
     tabla2.setGridColor(new Color(230, 230, 230));
     tabla2.setSelectionBackground(new Color(213, 245, 227));
     
+    // Agregar la tabla al panel central en lugar de a la ventana directamente
     panelCentral.add(scrollPane2);
     
     try {
@@ -633,7 +641,7 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
 
         Class.forName("org.sqlite.JDBC");
         // Corregir la ruta de la base de datos para asegurar que sea la correcta
-        con_cant = DriverManager.getConnection("jdbc:sqlite:c:ventasdb.db");
+        con_cant = DriverManager.getConnection("jdbc:sqlite:c:/Users/Lenovo/Downloads/coding/java/java_clase/ventasdb.db");
         
         // Configurar para evitar bloqueos de base de datos con tiempos de espera más largos
         // IMPORTANTE: Configurar PRAGMA antes de cambiar autoCommit
@@ -771,14 +779,21 @@ public void SumarFacturar(String MetodoPago) {
     // Create the invoice with the total amount (including tax)
     Factura fac = new Factura(var_ced, sumaTotal, var_nom, MetodoPago);
     
+    // Add all items to the invoice
     for (int i = 0; i < listaPrecios.size(); i++) {
         fac.agregarLinea("Item " + (i+1) + " - " + listaNombre.get(i), 
                          listaPrecios.get(i), 
                          listaCantidades.get(i), 
                          listaProductos.get(i));
     }
+    
+    // No need to recalculate totals since we're already passing the correct total
+    // The recalcularTotales method was causing the issue by recalculating the total
+    
+    // Show the invoice
     fac.mostrar();
     
+    // Debug output
     System.out.println("Productos en la factura:");
     for (int i = 0; i < listaPrecios.size(); i++) {
         System.out.printf("Item %d: %s x %d = %.2f%n", 
