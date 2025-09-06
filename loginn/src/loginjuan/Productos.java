@@ -2,6 +2,7 @@
 package loginjuan;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -31,7 +33,7 @@ import javax.swing.table.DefaultTableModel;
  */
 class Productos {
     JPanel panelCentral = new JPanel();
-    Color rojo_transparente = new Color(22, 109, 99); // Rojo semi-transparente
+    Color rojo_transparente = new Color(22, 109, 99); 
     Color azul_oscuro = new Color(40, 53, 96);
     Color azul_claro = new Color(176, 206, 255);
     Color grios_oscuro = new Color(65, 71, 78);
@@ -39,7 +41,6 @@ class Productos {
     Color color_principal = new Color(52, 73, 94);
     Color color_secundario = new Color(245, 245, 245);
     
-    //Entradas para leer prductos
     JTextField ent_nom = new JTextField();
     JTextField ent_pre = new JTextField();       
     JTextField ent_exi = new JTextField();
@@ -47,13 +48,11 @@ class Productos {
     
     DefaultTableModel modelo = new DefaultTableModel();
     
-    // Crear el JTable con el modelo
     JTable tabla = new JTable(modelo);
     
-    //ventana de producto con diseño mejorado
     JFrame ventana6 = new JFrame("Sistema de Gestión - Productos");
+    private JFrame parentWindow;  
     
-    //entrada para aceptar la cantidad
     JTextField ent_cant = new JTextField();
     
     public String cantidad;
@@ -64,7 +63,6 @@ class Productos {
     public String var_ced;
     public String var_nom;
     
-    // Configuración inicial de la tabla del carrito
     DefaultTableModel modelo2 = new DefaultTableModel();
     JTable tabla2 = new JTable(modelo2);
     JScrollPane scrollPane2 = new JScrollPane(tabla2);
@@ -100,100 +98,135 @@ class Productos {
     ArrayList<Double> listaImpuesto = new ArrayList<>();
     ArrayList<Integer> listaCantidades = new ArrayList<>();
     ArrayList<Double> listaProductos = new ArrayList<>();
+    ArrayList<String> listaNombre = new ArrayList<>();
 
     public Productos(String cedula_del_cliente, String nombre_del_cliente) {
+        this.parentWindow = parentWindow;  // Guardar referencia a la ventana padre
         
         var_ced = cedula_del_cliente;   
         var_nom = nombre_del_cliente;    
         System.out.println(var_ced);
                 
-        ventana6.setSize(900, 650);
+        ventana6.setSize(1000, 700);  // Aumentar el tamaño para coincidir con las otras ventanas
         ventana6.setLocationRelativeTo(null);
         ventana6.setLayout(null);
         ventana6.getContentPane().setBackground(new Color(245, 245, 245));
         
-        // Panel lateral para el menú
         JPanel panelLateral = new JPanel();
-        panelLateral.setBounds(0, 0, 250, 650);
+        panelLateral.setBounds(0, 0, 300, 700);  // Hacer el panel más angosto
         panelLateral.setBackground(new Color(52, 73, 94));
         panelLateral.setLayout(null);
+        
+        JLabel tituloSistema = new JLabel("Gestión de Productos");
+        tituloSistema.setBounds(20, 20, 260, 30);
+        tituloSistema.setForeground(Color.WHITE);
+        tituloSistema.setFont(new Font("Arial", Font.BOLD, 18));
+        panelLateral.add(tituloSistema);
+        
         ventana6.add(panelLateral);
         
-        panelCentral.setBounds(250, 0, 650, 650);
-        panelCentral.setBackground(new Color(245, 245, 245));
+        panelCentral.setBounds(300, 0, 700, 700);  // Ajustar para el panel lateral más angosto
+        panelCentral.setBackground(new Color(245, 247, 250));
         panelCentral.setLayout(null);
         ventana6.add(panelCentral);
         
-        // Título del formulario
-        JLabel etq_titulo = new JLabel("Gestión de Productos");
-        etq_titulo.setBounds(30, 20, 200, 30);
-        etq_titulo.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 16));
-        etq_titulo.setForeground(Color.WHITE);
-        panelLateral.add(etq_titulo);
-        
-        // Mostrar la cédula del cliente
-        JLabel etq_cliente_actual = new JLabel("Cliente: " + cedula_del_cliente);
-        etq_cliente_actual.setBounds(30, 550, 200, 30);
-        etq_cliente_actual.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
+        // Mostrar la información del cliente
+        JLabel etq_cliente_actual = new JLabel("Cliente: " + nombre_del_cliente);
+        etq_cliente_actual.setBounds(20, 60, 260, 20);
+        etq_cliente_actual.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
         etq_cliente_actual.setForeground(Color.WHITE);
         panelLateral.add(etq_cliente_actual);
         
-        //Widgets con estilo moderno
+        JLabel etq_cedula = new JLabel("Cédula: " + cedula_del_cliente);
+        etq_cedula.setBounds(20, 80, 260, 20);
+        etq_cedula.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 11));
+        etq_cedula.setForeground(new Color(200, 200, 200));
+        panelLateral.add(etq_cedula);
+        
+        // Widgets del formulario
+        int yPos = 120;  // Posición Y inicial
+        int fieldHeight = 25;  // Altura de los campos
+        int labelSpacing = 5;  // Espacio entre etiquetas y campos
+        int fieldSpacing = 40;  // Espacio entre grupos de campos
+        
+        // Campo Producto
         JLabel etq_nom = new JLabel("Producto");
-        etq_nom.setBounds(30, 70, 150, 30);
-        etq_nom.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 14));
+        etq_nom.setBounds(20, yPos, 260, 20);
+        etq_nom.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
         etq_nom.setForeground(Color.WHITE);
         panelLateral.add(etq_nom);
         
+        ent_nom.setBounds(20, yPos + 20, 260, fieldHeight);
+        ent_nom.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
+        ent_nom.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
+            javax.swing.BorderFactory.createEmptyBorder(2, 5, 2, 5)));
+        panelLateral.add(ent_nom);
+        
+        // Campo Código
+        yPos += fieldHeight + fieldSpacing;
         JLabel etq_codigo = new JLabel("Código");
-        etq_codigo.setBounds(30, 140, 150, 30);
-        etq_codigo.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 14));
+        etq_codigo.setBounds(20, yPos, 260, 20);
+        etq_codigo.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
         etq_codigo.setForeground(Color.WHITE);
         panelLateral.add(etq_codigo);
         
+        ent_codigo.setBounds(20, yPos + 20, 260, fieldHeight);
+        ent_codigo.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
+        ent_codigo.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
+            javax.swing.BorderFactory.createEmptyBorder(2, 5, 2, 5)));
+        panelLateral.add(ent_codigo);
+        
+        // Campo Precio
+        yPos += fieldHeight + fieldSpacing;
         JLabel etq_pre = new JLabel("Precio");
-        etq_pre.setBounds(30, 210, 150, 30);
-        etq_pre.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 14));
+        etq_pre.setBounds(20, yPos, 260, 20);
+        etq_pre.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
         etq_pre.setForeground(Color.WHITE);
         panelLateral.add(etq_pre);
         
+        ent_pre.setBounds(20, yPos + 20, 260, fieldHeight);
+        ent_pre.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
+        ent_pre.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
+            javax.swing.BorderFactory.createEmptyBorder(2, 5, 2, 5)));
+        panelLateral.add(ent_pre);
+        
+        // Campo Existencias
+        yPos += fieldHeight + fieldSpacing;
         JLabel etq_exi = new JLabel("Existencias");
-        etq_exi.setBounds(30, 280, 150, 30);
-        etq_exi.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 14));
+        etq_exi.setBounds(20, yPos, 260, 20);
+        etq_exi.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
         etq_exi.setForeground(Color.WHITE);
         panelLateral.add(etq_exi);
         
-        ent_nom.setBounds(30, 100, 190, 30);
-        ent_nom.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
-            javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        panelLateral.add(ent_nom);
-
-        ent_codigo.setBounds(30, 170, 190, 30);
-        ent_codigo.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
-            javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        panelLateral.add(ent_codigo);
-        
-        ent_pre.setBounds(30, 240, 190, 30);
-        ent_pre.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
-            javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        panelLateral.add(ent_pre);
-
-        ent_exi.setBounds(30, 310, 190, 30);
+        ent_exi.setBounds(20, yPos + 20, 260, fieldHeight);
+        ent_exi.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
         ent_exi.setBorder(javax.swing.BorderFactory.createCompoundBorder(
             javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
-            javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+            javax.swing.BorderFactory.createEmptyBorder(2, 5, 2, 5)));
         panelLateral.add(ent_exi);
         
+        // Botón Buscar Producto
+        yPos += fieldHeight + fieldSpacing + 10;
         JButton buscar_prod = new JButton("Buscar");
-        buscar_prod.setBounds(30, 360, 190, 40);
-        buscar_prod.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
-        buscar_prod.setBackground(new Color(52, 152, 219));
+        buscar_prod.setBounds(20, yPos, 260, 35);
+        buscar_prod.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 13));
+        buscar_prod.setBackground(new Color(46, 204, 113));
         buscar_prod.setForeground(Color.WHITE);
         buscar_prod.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         buscar_prod.setFocusPainted(false);
+        buscar_prod.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        // Efecto hover
+        buscar_prod.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                buscar_prod.setBackground(new Color(39, 174, 96));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                buscar_prod.setBackground(new Color(46, 204, 113));
+            }
+        });
         panelLateral.add(buscar_prod);
         
         buscar_prod.addActionListener(new java.awt.event.ActionListener() {
@@ -210,26 +243,37 @@ class Productos {
 
             }
         });
-        //aceptar resultado
-        JLabel etq_cant = new JLabel("Elija cantidad");
-        etq_cant.setBounds(30, 420, 200, 30);
-        etq_cant.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 14));
+        yPos += 45;  
+        JLabel etq_cant = new JLabel("Cantidad");
+        etq_cant.setBounds(20, yPos, 260, 20);
+        etq_cant.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
         etq_cant.setForeground(Color.WHITE);
         panelLateral.add(etq_cant);
         
-        ent_cant.setBounds(30, 450, 190, 30);
+        ent_cant.setBounds(20, yPos + 20, 120, fieldHeight);
+        ent_cant.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
         ent_cant.setBorder(javax.swing.BorderFactory.createCompoundBorder(
             javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
-            javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+            javax.swing.BorderFactory.createEmptyBorder(2, 5, 2, 5)));
         panelLateral.add(ent_cant);
         
-        JButton boton_aceptar = new JButton("Agregar al Carrito");
-        boton_aceptar.setBounds(30, 500, 190, 40);
-        boton_aceptar.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
-        boton_aceptar.setBackground(new Color(46, 204, 113));
+        JButton boton_aceptar = new JButton("Agregar");
+        boton_aceptar.setBounds(150, yPos + 18, 130, 30);
+        boton_aceptar.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
+        boton_aceptar.setBackground(new Color(52, 152, 219));
         boton_aceptar.setForeground(Color.WHITE);
         boton_aceptar.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         boton_aceptar.setFocusPainted(false);
+        boton_aceptar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        // Efecto hover
+        boton_aceptar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                boton_aceptar.setBackground(new Color(41, 128, 185));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                boton_aceptar.setBackground(new Color(52, 152, 219));
+            }
+        });
         panelLateral.add(boton_aceptar);
 
         boton_aceptar.addActionListener(new java.awt.event.ActionListener() {
@@ -298,7 +342,6 @@ class Productos {
                     ent_pre.setText(filas2[2]);
                     ent_exi.setText(filas2[3]);
 
-                    JOptionPane.showMessageDialog(null, "Producto no encontrado");
                 }
             }
         } catch (Exception e) {
@@ -455,15 +498,32 @@ public void AceptarCantidad(){
     
 public void insertarEnCarrito(String cedula, String codigoProducto, String cantidad) throws SQLException, ClassNotFoundException {
     
+    // Panel para contener los botones y el combo box
+    JPanel buttonPanel = new JPanel();
+    buttonPanel.setLayout(null);
+    buttonPanel.setBounds(30, 570, 640, 60);
+    buttonPanel.setOpaque(false); // Hacer el panel transparente
+    
+    // Botón Eliminar más pequeño
     JButton boton_eliminar = new JButton("Eliminar");
-    boton_eliminar.setBounds(130, 560, 190, 40);
-    boton_eliminar.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
-    boton_eliminar.setBackground(azul_oscuro);
+    boton_eliminar.setBounds(0, 10, 150, 35);
+    boton_eliminar.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
+    boton_eliminar.setBackground(new Color(231, 76, 60)); // Rojo
     boton_eliminar.setForeground(Color.WHITE);
     boton_eliminar.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
     boton_eliminar.setFocusPainted(false);
-    panelCentral.add(boton_eliminar);
-
+    boton_eliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    
+    // Efecto hover para el botón eliminar
+    boton_eliminar.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseEntered(java.awt.event.MouseEvent evt) {
+            boton_eliminar.setBackground(new Color(192, 57, 43));
+        }
+        public void mouseExited(java.awt.event.MouseEvent evt) {
+            boton_eliminar.setBackground(new Color(231, 76, 60));
+        }
+    });
+    
     boton_eliminar.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -472,23 +532,57 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
             tabla2.repaint();
         }
     });
-
+    
+    // Combo box para métodos de pago
+    JLabel etq_metodo_pago = new JLabel("Método de pago:");
+    etq_metodo_pago.setBounds(160, 0, 120, 20);
+    etq_metodo_pago.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 11));
+    etq_metodo_pago.setForeground(new Color(70, 70, 70));
+    
+    JComboBox<String> comboMetodoPago = new JComboBox<>();
+    comboMetodoPago.setBounds(160, 20, 170, 30);
+    comboMetodoPago.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
+    comboMetodoPago.addItem("Efectivo");
+    comboMetodoPago.addItem("Tarjeta de Crédito");
+    comboMetodoPago.addItem("Tarjeta de Débito");
+    comboMetodoPago.addItem("Transferencia");
+    comboMetodoPago.setSelectedIndex(0);
+    
     JButton boton_pagar = new JButton("Pagar");
-    boton_pagar.setBounds(350, 560, 190, 40);
-    boton_pagar.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
-    boton_pagar.setBackground(azul_oscuro);
+    boton_pagar.setBounds(340, 10, 150, 35);
+    boton_pagar.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
+    boton_pagar.setBackground(new Color(46, 204, 113)); // Verde
     boton_pagar.setForeground(Color.WHITE);
     boton_pagar.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
     boton_pagar.setFocusPainted(false);
-    panelCentral.add(boton_pagar);
+    boton_pagar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    
+    boton_pagar.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseEntered(java.awt.event.MouseEvent evt) {
+            boton_pagar.setBackground(new Color(39, 174, 96));
+        }
+        public void mouseExited(java.awt.event.MouseEvent evt) {
+            boton_pagar.setBackground(new Color(46, 204, 113));
+        }
+    });
 
+    // Agregar componentes al panel
+    buttonPanel.add(boton_eliminar);
+    buttonPanel.add(etq_metodo_pago);
+    buttonPanel.add(comboMetodoPago);
+    buttonPanel.add(boton_pagar);
+    
+    // Agregar el panel al panel central
+    panelCentral.add(buttonPanel);
     panelCentral.revalidate();
     panelCentral.repaint();
 
     boton_pagar.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            SumarFacturar();
+            String metodoPago = (String)comboMetodoPago.getSelectedItem();
+
+            SumarFacturar(metodoPago);
         }
     });
     
@@ -513,7 +607,6 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
         new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14),
         new Color(52, 73, 94)));
     
-    // Mejorar el estilo de la tabla del carrito
     tabla2.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
     tabla2.setRowHeight(25);
     tabla2.getTableHeader().setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
@@ -522,7 +615,6 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
     tabla2.setGridColor(new Color(230, 230, 230));
     tabla2.setSelectionBackground(new Color(213, 245, 227));
     
-    // Agregar la tabla al panel central en lugar de a la ventana directamente
     panelCentral.add(scrollPane2);
     
     try {
@@ -536,11 +628,12 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
         listaPrecios.add(Double.parseDouble(precio));
         listaCantidades.add(Integer.parseInt(cantidad));
         listaProductos.add(total);
+        listaNombre.add(ent_nom.getText());
         System.out.println("producto agregado a la lista " + total + "lista: " + listaProductos);
 
         Class.forName("org.sqlite.JDBC");
         // Corregir la ruta de la base de datos para asegurar que sea la correcta
-        con_cant = DriverManager.getConnection("jdbc:sqlite:c:/Users/Lenovo/Downloads/coding/java/java_clase/ventasdb.db");
+        con_cant = DriverManager.getConnection("jdbc:sqlite:c:ventasdb.db");
         
         // Configurar para evitar bloqueos de base de datos con tiempos de espera más largos
         // IMPORTANTE: Configurar PRAGMA antes de cambiar autoCommit
@@ -555,7 +648,6 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
         // Configuraciones mejoradas para evitar bloqueos de base de datos
         con_cant.setAutoCommit(false); // Desactivar autocommit para manejar la transacción manualmente
 
-        // Insertar en la base de datos
         int_cant = con_cant.prepareStatement("INSERT INTO carrito(car_ced, car_pro, car_can) VALUES(?,?,?)");
     
         int_cant.setString(1, cedula);
@@ -566,14 +658,12 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
         con_cant.commit(); // Confirmar la transacción
         
         if (filas_actualizadas > 0) {
-            // Agregar la fila al JTable del carrito
             String[] filas3 = new String[3];
             filas3[0] = cedula;
             //filas3[1] = codigoProducto + " - " + ent_nom.getText();
             filas3[1] = codigoProducto;
             filas3[2] = cantidad;
             
-            // Verificar si el modelo tiene las columnas necesarias
             if (modelo2.getColumnCount() == 0) {
                 modelo2.addColumn("Cliente");
                 modelo2.addColumn("Producto");
@@ -601,7 +691,6 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
             JOptionPane.showMessageDialog(null, "Error al agregar el producto al carrito.");
         } 
     } catch (SQLException ex) {
-        // En caso de error, hacer rollback de la transacción
         if (con_cant != null) {
             try {
                 con_cant.rollback();
@@ -618,9 +707,7 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
         if (int_cant != null) try { int_cant.close(); } catch (SQLException e1) { }
         if (con_cant != null) try { con_cant.close(); } catch (SQLException e1) { }
     }
-    /*ventana6.revalidate();
-    ventana6.repaint();
-    ventana6.setVisible(true);  */ 
+
 }
 
 public void Eliminar() {
@@ -634,7 +721,6 @@ public void Eliminar() {
         int opcion = JOptionPane.showConfirmDialog(null, "¿Está seguro de eliminar el producto?", "Confirmar eliminación", 
                 JOptionPane.YES_NO_OPTION);
         
-        // Use the actual product code from the table
         variable_eliminar = idProducto;
         
         if (opcion == JOptionPane.YES_OPTION) {
@@ -653,11 +739,9 @@ public void Eliminar() {
                 stmt = conBD.prepareStatement(consultaEliminar);
                 stmt.setString(1, variable_eliminar);
 
-                // Execute the delete query
                 int filasAfectadas = stmt.executeUpdate();
                 
                 if (filasAfectadas > 0) {
-                    //JOptionPane.showMessageDialog(null, "Producto eliminado correctamente.");
 
                     DefaultTableModel modelo2 = (DefaultTableModel) tabla2.getModel();
                     modelo2.removeRow(fila_seleccionada);
@@ -676,32 +760,34 @@ public void Eliminar() {
     }
     }
 
-public void SumarFacturar(){
+public void SumarFacturar(String MetodoPago) {
+    double sumaTotal = 0.0;
+    for (Double numero : listaProductos) {
+        sumaTotal += numero;
+    }
 
-        double sumaTotal = 0.0;
-        for (Double numero : listaProductos) {
-            sumaTotal = sumaTotal + numero;
-        }
-
-        System.out.println("La suma de la lista es: " + sumaTotal + " al cliente: " + var_nom);
-        Factura fac = new Factura(var_ced, sumaTotal, var_nom);
-        fac.mostrar();
-        for (double iterable_element : listaProductos) {
-            System.out.println(iterable_element);
-        }
-
-        for (double precio : listaPrecios) {
-            System.out.println(precio);
-        }
-        for (int cantidad : listaCantidades) {
-            System.out.println(cantidad);
-        }
-
-        for (int i = 0; i < listaPrecios.size(); i++) {
-            fac.agregarLinea("Item " + (i+1) + " - Descripción", listaPrecios.get(i), listaCantidades.get(i), listaProductos.get(i));
-        }
-        // recalcula totales (puedes pasar IVA 0.0, 0.16, etc.)
-        fac.recalcularTotales(0.00); 
+    System.out.println("La suma de la lista es: " + sumaTotal + " al cliente: " + var_nom);
+    
+    // Create the invoice with the total amount (including tax)
+    Factura fac = new Factura(var_ced, sumaTotal, var_nom, MetodoPago);
+    
+    for (int i = 0; i < listaPrecios.size(); i++) {
+        fac.agregarLinea("Item " + (i+1) + " - " + listaNombre.get(i), 
+                         listaPrecios.get(i), 
+                         listaCantidades.get(i), 
+                         listaProductos.get(i));
+    }
+    fac.mostrar();
+    
+    System.out.println("Productos en la factura:");
+    for (int i = 0; i < listaPrecios.size(); i++) {
+        System.out.printf("Item %d: %s x %d = %.2f%n", 
+            i+1, 
+            listaNombre.get(i), 
+            listaCantidades.get(i), 
+            listaProductos.get(i));
+    }
+    System.out.printf("Total facturado: %.2f%n", sumaTotal);
 }
 
 }

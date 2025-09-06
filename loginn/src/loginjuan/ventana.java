@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -53,93 +54,164 @@ class ventana {
     
     public ventana() {
         JFrame login = new JFrame("Sistema de Gestión - Login");
-        login.setSize(900, 650);
+        login.setSize(1000, 700);
         login.setLocationRelativeTo(null);
         login.setLayout(null);
+        login.getContentPane().setBackground(new Color(240, 242, 245));
         
         // Panel lateral para el menú
         JPanel panelLateral = new JPanel();
-        panelLateral.setBounds(0, 0, 250, 650);
+        panelLateral.setBounds(0, 0, 350, 700);
         panelLateral.setBackground(new Color(52, 73, 94));
         panelLateral.setLayout(null);
         login.add(panelLateral);
         
         // Panel central para el contenido
         JPanel panelCentral = new JPanel();
-        panelCentral.setBounds(250, 0, 650, 650);
-        panelCentral.setBackground(new Color(245, 245, 245));
+        panelCentral.setBounds(350, 0, 650, 700);
+        panelCentral.setBackground(new Color(245, 247, 250));
         panelCentral.setLayout(null);
         login.add(panelCentral);
         
-        // Título del formulario
-        JLabel etqTitulo = new JLabel("Acceso al Sistema");
-        etqTitulo.setBounds(30, 30, 200, 30);
-        etqTitulo.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 18));
+        // Logo y título en el panel lateral
+        JLabel iconLabel = new JLabel("🔒");
+        iconLabel.setBounds(30, 100, 60, 60);
+        iconLabel.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 40));
+        iconLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        panelLateral.add(iconLabel);
+        
+        JLabel etqTitulo = new JLabel("Bienvenido");
+        etqTitulo.setBounds(30, 170, 290, 40);
+        etqTitulo.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 28));
         etqTitulo.setForeground(Color.WHITE);
         panelLateral.add(etqTitulo);
         
-        // Widgets con estilo moderno
+        JLabel subtitulo = new JLabel("Inicia sesión para continuar");
+        subtitulo.setBounds(30, 210, 290, 25);
+        subtitulo.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 14));
+        subtitulo.setForeground(new Color(200, 200, 200));
+        panelLateral.add(subtitulo);
+        
+        // Tarjeta de inicio de sesión
+        JPanel loginCard = new JPanel();
+        loginCard.setBounds(100, 150, 450, 400);
+        loginCard.setBackground(Color.WHITE);
+        loginCard.setLayout(null);
+        loginCard.setBorder(javax.swing.BorderFactory.createLineBorder(new Color(230, 230, 230), 1, true));
+        loginCard.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(new Color(230, 230, 230)),
+            javax.swing.BorderFactory.createEmptyBorder(20, 30, 30, 30)));
+        
+        // Sombra para la tarjeta
+        loginCard.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(230, 230, 230)),
+            BorderFactory.createEmptyBorder(5, 15, 5, 10)
+        ));
+        loginCard.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createEmptyBorder(0, 15, 5, 10),
+            loginCard.getBorder()
+        ));
+        
+        panelCentral.add(loginCard);
+        
+        // Título del formulario
+        JLabel loginTitle = new JLabel("Iniciar Sesión");
+        loginTitle.setBounds(30, 10, 390, 40);
+        loginTitle.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 24));
+        loginTitle.setForeground(new Color(52, 73, 94));
+        loginCard.add(loginTitle);
+        
+        // Campo de usuario
         JLabel etq = new JLabel("Usuario");
-        etq.setBounds(200, 100, 150, 30);
-        etq.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 16));
-        etq.setForeground(new Color(52, 73, 94));
-        panelCentral.add(etq);
+        etq.setBounds(30, 70, 300, 25);
+        etq.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 14));
+        etq.setForeground(new Color(80, 80, 80));
+        loginCard.add(etq);
         
-        JLabel etq2 = new JLabel("Contraseña");
-        etq2.setBounds(200, 180, 150, 30);
-        etq2.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 16));
-        etq2.setForeground(new Color(52, 73, 94));
-        panelCentral.add(etq2);
-        
-        // Entradas con estilo moderno
-        ent.setBounds(200, 130, 250, 40);
+        ent.setBounds(30, 95, 390, 45);
+        ent.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 15));
         ent.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
-            javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        panelCentral.add(ent);
+            javax.swing.BorderFactory.createLineBorder(new Color(200, 200, 200)),
+            javax.swing.BorderFactory.createEmptyBorder(10, 15, 10, 15)));
+        loginCard.add(ent);
         
-        ent2.setBounds(200, 210, 250, 40);
+        // Campo de contraseña
+        JLabel etq2 = new JLabel("Contraseña");
+        etq2.setBounds(30, 160, 300, 25);
+        etq2.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 14));
+        etq2.setForeground(new Color(80, 80, 80));
+        loginCard.add(etq2);
+        
+        ent2.setBounds(30, 185, 390, 45);
+        ent2.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 15));
         ent2.setEchoChar('•');
         ent2.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
-            javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        panelCentral.add(ent2);
+            javax.swing.BorderFactory.createLineBorder(new Color(200, 200, 200)),
+            javax.swing.BorderFactory.createEmptyBorder(10, 15, 10, 15)));
+        loginCard.add(ent2);
         
-        // Botón de ingreso con estilo moderno
-        JButton LeeButton = new JButton("Ingresar");
-        LeeButton.setBounds(200, 280, 250, 45);
-        LeeButton.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
+        // Recordar usuario
+        JCheckBox rememberMe = new JCheckBox("Recordar mi usuario");
+        rememberMe.setBounds(30, 245, 200, 25);
+        rememberMe.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 13));
+        rememberMe.setBackground(Color.WHITE);
+        rememberMe.setFocusPainted(false);
+        //loginCard.add(rememberMe);
+        
+        JButton LeeButton = new JButton("Iniciar Sesión");
+        LeeButton.setBounds(30, 290, 390, 50);
+        LeeButton.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 15));
         LeeButton.setBackground(new Color(52, 152, 219));
         LeeButton.setForeground(Color.WHITE);
-        LeeButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        LeeButton.setBorderPainted(false);
         LeeButton.setFocusPainted(false);
-        panelCentral.add(LeeButton);
+        LeeButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        
+        LeeButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                LeeButton.setBackground(new Color(41, 128, 185));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                LeeButton.setBackground(new Color(52, 152, 219));
+            }
+        });
+        
+        loginCard.add(LeeButton);
+        
+        // Enlace para recuperar contraseña
+        JLabel forgotPassword = new JLabel("¿Olvidaste tu contraseña?");
+        forgotPassword.setBounds(30, 350, 390, 20);
+        forgotPassword.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 13));
+        forgotPassword.setForeground(new Color(52, 152, 219));
+        forgotPassword.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        forgotPassword.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        //loginCard.add(forgotPassword);
+        
+        // Pie de página en el panel lateral
+        JPanel footerPanel = new JPanel();
+        footerPanel.setBounds(30, 650, 350, 50);
+        footerPanel.setBackground(new Color(45, 62, 80));
+        footerPanel.setLayout(new java.awt.BorderLayout());
+        
+        JLabel copyrightLabel = new JLabel(" 2023 Sistema de Gestión - Versión 1.0");
+        copyrightLabel.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 11));
+        copyrightLabel.setForeground(new Color(150, 150, 150));
+        copyrightLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        footerPanel.add(copyrightLabel, java.awt.BorderLayout.CENTER);
+        
+        panelLateral.add(footerPanel);
+        
+        // Acción del botón de login
         LeeButton.addActionListener(new java.awt.event.ActionListener() {
-                @Override
-                    public void actionPerformed(java.awt.event.ActionEvent evt)
-                        {try {
-                                LeeButtonEjecuta(evt);
-                        } catch (ClassNotFoundException ex) {
-                                Logger.getLogger(ventana.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (SQLException ex) {
-                                Logger.getLogger(ventana.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-}
-                    });
-        
-        // Imagen o logo decorativo en el panel lateral
-        JLabel logoLabel = new JLabel("Sistema de Ventas");
-        logoLabel.setBounds(30, 100, 190, 30);
-        logoLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 16));
-        logoLabel.setForeground(Color.WHITE);
-        panelLateral.add(logoLabel);
-        
-        // Información de copyright en el panel lateral
-        JLabel copyrightLabel = new JLabel("© 2023 Sistema de Gestión");
-        copyrightLabel.setBounds(30, 600, 190, 20);
-        copyrightLabel.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 10));
-        copyrightLabel.setForeground(new Color(189, 195, 199));
-        panelLateral.add(copyrightLabel);
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    LeeButtonEjecuta(evt);
+                } catch (ClassNotFoundException | SQLException ex) {
+                    Logger.getLogger(ventana.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
 
         login.setVisible(true);
     }

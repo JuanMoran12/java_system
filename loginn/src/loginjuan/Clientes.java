@@ -1,6 +1,7 @@
 package loginjuan;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,188 +19,213 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 class Clientes {
-    //entrada para la cedula del cliente
-    JTextField ent_buscar = new JTextField();
-    
-    //insertar clientes
-    JTextField ent_cedula = new JTextField();
-    JTextField ent_cliente = new JTextField();
-    JTextField ent_apellido = new JTextField();
-    JTextField ent_telefono = new JTextField();
-    JTextField ent_direccion = new JTextField();
 
-    JPanel buttonPanel = new JPanel();
-    JButton boton_producto = new JButton("productos");
+    private JTextField ent_buscar;
+    private JTextField ent_cedula;
+    private JTextField ent_cliente;
+    private JTextField ent_apellido;
+    private JTextField ent_telefono;
+    private JTextField ent_direccion;
+
+    // Componentes de la interfaz
+    private JPanel buttonPanel;
+    private JButton boton_producto;
+    private JButton agregar_cliente;
+    private JFrame ventana5;  // Mover la declaración de la ventana al nivel de clase
     
-    JButton agregar_cliente = new JButton("Agregar"); 
-    //cedula del cliente
+    // Datos del cliente
     public String cedula_del_cliente;
 
-    public Clientes(Color Azul, JFrame opciones) {
-        // Set up the main frame
-        JFrame ventana5 = new JFrame("Sistema de Gestión - Clientes");
-        ventana5.setSize(900, 650);
+    // Método auxiliar para crear botones con estilo consistente
+    private JButton createButton(String text, int x, int y, int width, int height) {
+        JButton button = new JButton(text);
+        button.setBounds(x, y, width, height);
+        button.setBackground(new Color(52, 152, 219));
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        
+        // Efecto hover
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(41, 128, 185));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(52, 152, 219));
+            }
+        });
+        
+        return button;
+    }
+    
+    // Método para crear campos de texto con estilo
+    private JTextField createTextField(int x, int y, int width, int height) {
+        JTextField textField = new JTextField();
+        textField.setBounds(x, y, width, height);
+        textField.setFont(new Font("Arial", Font.PLAIN, 14));
+        textField.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(new Color(220, 220, 220)),
+            javax.swing.BorderFactory.createEmptyBorder(8, 10, 8, 10)));
+        return textField;
+    }
+    
+    // Método para crear etiquetas
+    private JLabel createLabel(String text, int x, int y, int width, int height, int style) {
+        JLabel label = new JLabel(text);
+        label.setBounds(x, y, width, height);
+        label.setFont(new Font("Arial", style, 14));
+        label.setForeground(new Color(52, 73, 94));
+        return label;
+    }
+
+    public Clientes(Color Azul) {
+        // Configuración de la ventana principal
+        ventana5 = new JFrame("Sistema de Gestión - Clientes");
+        ventana5.setSize(1000, 700);
+        ventana5.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         ventana5.setLocationRelativeTo(null);
         ventana5.setLayout(null);
-        ventana5.getContentPane().setBackground(new Color(245, 245, 245));
+        ventana5.getContentPane().setBackground(new Color(245, 247, 250));
         
-        // Create panels for modern structure
+        // Panel lateral
         JPanel panelLateral = new JPanel();
-        panelLateral.setBounds(0, 0, 250, 650);
+        panelLateral.setBounds(0, 0, 350, 700);
         panelLateral.setBackground(new Color(52, 73, 94));
         panelLateral.setLayout(null);
         
-        JPanel panelCentral = new JPanel();
-        panelCentral.setBounds(250, 0, 650, 650);
-        panelCentral.setBackground(Color.WHITE);
-        panelCentral.setLayout(null);
+        // Logo y título
+        JLabel iconLabel = new JLabel("👥");
+        iconLabel.setBounds(30, 30, 60, 60);
+        iconLabel.setFont(new Font("Arial", Font.PLAIN, 40));
+        iconLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        panelLateral.add(iconLabel);
         
-        // Add panels to the frame
-        ventana5.add(panelLateral);
-        ventana5.add(panelCentral);
-        
-        // Left panel components
-        JLabel tituloSistema = new JLabel("SISTEMA DE GESTIÓN");
-        tituloSistema.setBounds(25, 30, 200, 30);
+        JLabel tituloSistema = new JLabel("Sistema de Gestión");
+        tituloSistema.setBounds(30, 100, 290, 40);
         tituloSistema.setForeground(Color.WHITE);
-        tituloSistema.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        tituloSistema.setFont(new Font("Arial", Font.BOLD, 24));
         panelLateral.add(tituloSistema);
         
-        JPanel separador = new JPanel();
-        separador.setBounds(25, 70, 200, 2);
-        separador.setBackground(Color.WHITE);
-        panelLateral.add(separador);
+        // Botón para volver al menú de opciones
+        JButton btnVolver = createButton("← Volver al Menú", 30, 170, 290, 40);
+        btnVolver.setBackground(new Color(41, 128, 185));
+        btnVolver.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ventana5.dispose();
+                Opciones opciones = new Opciones(new String[]{"", ""}, new Color(52, 73, 94), new Color(52, 152, 219));
+            }
+        });
+        //panelLateral.add(btnVolver);
         
-        // Add menu options to left panel
-        JLabel menuTitle = new JLabel("MENÚ");
-        menuTitle.setBounds(25, 90, 200, 30);
-        menuTitle.setForeground(Color.WHITE);
-        menuTitle.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
-        panelLateral.add(menuTitle);
+        // Panel central
+        JPanel panelCentral = new JPanel();
+        panelCentral.setBounds(350, 0, 650, 700);
+        panelCentral.setBackground(new Color(245, 247, 250));
+        panelCentral.setLayout(null);
         
-        // Right panel components - Header
+        // Tarjeta de contenido
+        JPanel card = new JPanel();
+        card.setBounds(50, 50, 550, 600);
+        card.setBackground(Color.WHITE);
+        card.setLayout(null);
+        card.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(new Color(230, 230, 230)),
+            javax.swing.BorderFactory.createEmptyBorder(20, 30, 30, 30)
+        ));
+        
+        // Título de la sección
         JLabel tituloClientes = new JLabel("Gestión de Clientes");
-        tituloClientes.setBounds(30, 30, 300, 30);
-        tituloClientes.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 22));
+        tituloClientes.setBounds(30, 20, 490, 40);
+        tituloClientes.setFont(new Font("Arial", Font.BOLD, 24));
         tituloClientes.setForeground(new Color(52, 73, 94));
-        panelCentral.add(tituloClientes);
+        card.add(tituloClientes);
         
-        // Search section
+        // Sección de búsqueda
         JPanel searchPanel = new JPanel();
-        searchPanel.setBounds(30, 70, 590, 50);
-        searchPanel.setBackground(new Color(240, 240, 240));
+        searchPanel.setBounds(30, 80, 490, 60);
+        searchPanel.setBackground(new Color(245, 249, 252));
+        searchPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new Color(230, 236, 240)));
         searchPanel.setLayout(null);
-        panelCentral.add(searchPanel);
         
-        JLabel etq_buscar = new JLabel("Buscar por cédula:");
-        etq_buscar.setBounds(15, 10, 150, 30);
-        etq_buscar.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
-        etq_buscar.setForeground(new Color(52, 73, 94));
+        JLabel etq_buscar = createLabel("Buscar por cédula:", 20, 15, 150, 30, Font.PLAIN);
         searchPanel.add(etq_buscar);
         
-        ent_buscar.setBounds(165, 10, 250, 30);
-        ent_buscar.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
-        ent_buscar.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
-            javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        ent_buscar = createTextField(150, 15, 200, 30);
         searchPanel.add(ent_buscar);
         
-        JButton agregar = new JButton("Buscar");
-        agregar.setBounds(430, 10, 120, 30);
-        agregar.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
-        agregar.setBackground(new Color(52, 152, 219));
-        agregar.setForeground(Color.WHITE);
-        agregar.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        agregar.setFocusPainted(false);
-        searchPanel.add(agregar);
+        JButton btnBuscar = createButton("Buscar", 370, 15, 100, 30);
+        searchPanel.add(btnBuscar);
         
-        // Form section
+        card.add(searchPanel);
+        
+        // Formulario de cliente
         JPanel formPanel = new JPanel();
-        formPanel.setBounds(30, 140, 590, 350);
+        formPanel.setBounds(30, 170, 490, 380);
         formPanel.setBackground(Color.WHITE);
-        formPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new Color(220, 220, 220)));
+        formPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new Color(230, 236, 240)));
         formPanel.setLayout(null);
-        panelCentral.add(formPanel);
         
         JLabel etq_form_title = new JLabel("Información del Cliente");
-        etq_form_title.setBounds(20, 15, 300, 30);
-        etq_form_title.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 18));
+        etq_form_title.setBounds(20, 15, 450, 30);
+        etq_form_title.setFont(new Font("Arial", Font.BOLD, 18));
         etq_form_title.setForeground(new Color(52, 73, 94));
-        formPanel.add(etq_form_title);
+        formPanel.add(etq_form_title);        
         
-        // Form fields
-        JLabel etq_cedula = new JLabel("Cédula:");
-        etq_cedula.setBounds(20, 60, 100, 25);
-        etq_cedula.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
-        etq_cedula.setForeground(new Color(52, 73, 94));
+        // Campos del formulario
+        JLabel etq_cedula = createLabel("Cédula:", 20, 60, 100, 25, Font.PLAIN);
         formPanel.add(etq_cedula);
         
-        ent_cedula.setBounds(140, 60, 250, 30);
-        ent_cedula.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
-        ent_cedula.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
-            javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        ent_cedula = createTextField(140, 55, 300, 35);
         formPanel.add(ent_cedula);
         
-        JLabel etq_cliente = new JLabel("Nombre:");
-        etq_cliente.setBounds(20, 100, 100, 25);
-        etq_cliente.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
-        etq_cliente.setForeground(new Color(52, 73, 94));
+        JLabel etq_cliente = createLabel("Nombres:", 20, 110, 100, 25, Font.PLAIN);
         formPanel.add(etq_cliente);
         
-        ent_cliente.setBounds(140, 100, 250, 30);
-        ent_cliente.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
-        ent_cliente.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
-            javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        ent_cliente = createTextField(140, 105, 300, 35);
         formPanel.add(ent_cliente);
         
-        JLabel etq_apellido = new JLabel("Apellido:");
-        etq_apellido.setBounds(20, 140, 100, 25);
-        etq_apellido.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
-        etq_apellido.setForeground(new Color(52, 73, 94));
+        JLabel etq_apellido = createLabel("Apellidos:", 20, 160, 100, 25, Font.PLAIN);
         formPanel.add(etq_apellido);
         
-        ent_apellido.setBounds(140, 140, 250, 30);
-        ent_apellido.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
-        ent_apellido.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
-            javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        ent_apellido = createTextField(140, 155, 300, 35);
         formPanel.add(ent_apellido);
         
-        JLabel etq_telefono = new JLabel("Teléfono:");
-        etq_telefono.setBounds(20, 180, 100, 25);
-        etq_telefono.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
-        etq_telefono.setForeground(new Color(52, 73, 94));
+        JLabel etq_telefono = createLabel("Teléfono:", 20, 210, 100, 25, Font.PLAIN);
         formPanel.add(etq_telefono);
         
-        ent_telefono.setBounds(140, 180, 250, 30);
-        ent_telefono.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
-        ent_telefono.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
-            javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        ent_telefono = createTextField(140, 205, 300, 35);
         formPanel.add(ent_telefono);
         
-        JLabel etq_direccion = new JLabel("Dirección:");
-        etq_direccion.setBounds(20, 220, 100, 25);
-        etq_direccion.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
-        etq_direccion.setForeground(new Color(52, 73, 94));
+        JLabel etq_direccion = createLabel("Dirección:", 20, 260, 100, 25, Font.PLAIN);
         formPanel.add(etq_direccion);
         
-        ent_direccion.setBounds(140, 220, 400, 30);
-        ent_direccion.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
-        ent_direccion.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
-            javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        ent_direccion = createTextField(140, 255, 300, 35);
         formPanel.add(ent_direccion);
         
-        // Action buttons
-        buttonPanel.setBounds(20, 270, 550, 60);
+        // Botones de acción
+        buttonPanel = new JPanel();
+        buttonPanel.setBounds(20, 310, 450, 50);
         buttonPanel.setBackground(Color.WHITE);
         buttonPanel.setLayout(null);
-        formPanel.add(buttonPanel);
         
-        agregar_cliente.setBounds(20, 15, 150, 40);
+        agregar_cliente = createButton("Agregar Cliente", 0, 0, 150, 40);
+        buttonPanel.add(agregar_cliente);
+        
+        // Inicializar el botón de productos (inicialmente oculto)
+        boton_producto = createButton("Ver Productos", 160, 0, 150, 40);
+        boton_producto.setVisible(false);
+        buttonPanel.add(boton_producto);
+        
+        formPanel.add(buttonPanel);
+        card.add(formPanel);
+        
+        // Agregar componentes principales
+        panelCentral.add(card);
+        ventana5.add(panelLateral);
+        ventana5.add(panelCentral);
         agregar_cliente.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
         agregar_cliente.setBackground(new Color(46, 204, 113));
         agregar_cliente.setForeground(Color.WHITE);
@@ -208,7 +234,7 @@ class Clientes {
         buttonPanel.add(agregar_cliente);
         
         // Add action listeners
-        agregar.addActionListener(new java.awt.event.ActionListener() {
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
@@ -276,19 +302,10 @@ class Clientes {
                 ent_apellido.setText(filas[3]); 
                 ent_telefono.setText(filas[4]);
                 ent_direccion.setText(filas[5]); 
-            }
-            // Add the products button when a client exists
-            if (fila_contadora != null) {
-                boton_producto.setBounds(190, 15, 150, 40);
-                boton_producto.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
-                boton_producto.setBackground(new Color(52, 152, 219));
-                boton_producto.setForeground(Color.WHITE);
-                boton_producto.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-                boton_producto.setFocusPainted(false);
-                buttonPanel.add(boton_producto);
-
-                buttonPanel.revalidate();
-                buttonPanel.repaint();
+                
+                // Mostrar el botón de productos
+                boton_producto.setVisible(true);
+                boton_producto.repaint();
 
                 boton_producto.addActionListener(new java.awt.event.ActionListener() {
                     @Override
@@ -303,10 +320,14 @@ class Clientes {
                         }
                     }
                 });
+                
             }
 
             if (fila_contadora == null)
             {
+                // Ocultar el botón de productos si el cliente no existe
+                boton_producto.setVisible(false);
+                
                 int opcion = JOptionPane.showConfirmDialog(null, "¿Quiere Agregar un cliente?", "Cliente no existe", 
                     JOptionPane.YES_NO_OPTION);
 
@@ -405,8 +426,7 @@ class Clientes {
             }
         }
         
-        // Get the result outside the try-catch to use it for UI updates
-        int filas_afectadas = 1; // Assuming success since we would have thrown an exception otherwise
+        int filas_afectadas = 1; 
 
         if (filas_afectadas == 0){
 
@@ -415,28 +435,33 @@ class Clientes {
         } else{
             System.out.println("cliente incluido");
 
-            boton_producto.setBounds(300, 400, 150, 40);
-            boton_producto.setBackground(Color.CYAN);
-            buttonPanel.add(boton_producto);
+            this.cedula_del_cliente = ced;
 
-            boton_producto.addActionListener(new java.awt.event.ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
+            boton_producto.setVisible(true);
 
-                        try {
-                            productos(e);
-                        } catch (ClassNotFoundException ex) {
-                            Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (SQLException ex) {
-                            Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+            if (boton_producto.getActionListeners().length == 0) {
+                boton_producto.addActionListener(new java.awt.event.ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+
+                            try {
+                                productos(e);
+                            } catch (ClassNotFoundException ex) {
+                                Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (SQLException ex) {
+                                Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+                            }
 
                         }
                     });
+            }
+            
+            boton_producto.repaint();
+            buttonPanel.revalidate();
+            buttonPanel.repaint();
+            ventana5.revalidate();
+            ventana5.repaint();
         }
-        
-        consulta_insertar.close();
-        conBD7.close();
     }
     
     public void productos(ActionEvent e) throws ClassNotFoundException, SQLException {
@@ -446,5 +471,3 @@ class Clientes {
     }
     
     }
-    
-

@@ -4,5 +4,6 @@
     ],
     "java.project.referencedLibraries": [
         "loginn\\sqlite-jdbc-3.50.3.0.jar"
-    ]
+    ],
+    "CodeGPT.apiKey": "Google AI Studio"
 }
