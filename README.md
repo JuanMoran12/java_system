@@ -13,11 +13,11 @@ A Java-based Sales Management System with a graphical user interface for managin
 
 ## Screenshots
 
-| Login Page | Main Menu | Customer Management |
+| Main Page | Customer Management | Sales Page |
 |------------|-----------|-------------------|
 | ![Login Page](docs/I1.png) | ![Main Menu](docs/I2.png) | ![Customer Management](docs/I3.png) |
 
-| Product Catalog | Inventory Management |
+| Inventory Management | Invoice Page |
 |-----------------|---------------------|
 | ![Product Catalog](docs/I4.png) | ![Inventory Management](docs/I5.png) |
 
