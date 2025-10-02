@@ -26,6 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -112,9 +113,9 @@ class Productos {
         ventana6.setLayout(null);
         ventana6.getContentPane().setBackground(new Color(245, 245, 245));
         
-        JPanel panelLateral = new JPanel();
+        JPanel panelLateral = new RoundedPanel(10);
         panelLateral.setBounds(0, 0, 300, 700);  // Hacer el panel más angosto
-        panelLateral.setBackground(new Color(52, 73, 94));
+        panelLateral.setBackground(new Color(46, 64, 83));
         panelLateral.setLayout(null);
         
         JLabel tituloSistema = new JLabel("Gestión de Productos");
@@ -126,7 +127,7 @@ class Productos {
         ventana6.add(panelLateral);
         
         panelCentral.setBounds(300, 0, 700, 700);  // Ajustar para el panel lateral más angosto
-        panelCentral.setBackground(new Color(245, 247, 250));
+        panelCentral.setBackground(new Color(243, 246, 250));
         panelCentral.setLayout(null);
         ventana6.add(panelCentral);
         
@@ -159,7 +160,7 @@ class Productos {
         ent_nom.setBounds(20, yPos + 20, 260, fieldHeight);
         ent_nom.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
         ent_nom.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
+            new LineBorder(new Color(189, 195, 199), 1, true),
             javax.swing.BorderFactory.createEmptyBorder(2, 5, 2, 5)));
         panelLateral.add(ent_nom);
         
@@ -174,7 +175,7 @@ class Productos {
         ent_codigo.setBounds(20, yPos + 20, 260, fieldHeight);
         ent_codigo.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
         ent_codigo.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
+            new LineBorder(new Color(189, 195, 199), 1, true),
             javax.swing.BorderFactory.createEmptyBorder(2, 5, 2, 5)));
         panelLateral.add(ent_codigo);
         
@@ -189,7 +190,7 @@ class Productos {
         ent_pre.setBounds(20, yPos + 20, 260, fieldHeight);
         ent_pre.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
         ent_pre.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
+            new LineBorder(new Color(189, 195, 199), 1, true),
             javax.swing.BorderFactory.createEmptyBorder(2, 5, 2, 5)));
         panelLateral.add(ent_pre);
         
@@ -204,13 +205,13 @@ class Productos {
         ent_exi.setBounds(20, yPos + 20, 260, fieldHeight);
         ent_exi.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
         ent_exi.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
+            new LineBorder(new Color(189, 195, 199), 1, true),
             javax.swing.BorderFactory.createEmptyBorder(2, 5, 2, 5)));
         panelLateral.add(ent_exi);
         
         // Botón Buscar Producto
         yPos += fieldHeight + fieldSpacing + 10;
-        JButton buscar_prod = new JButton("Buscar");
+        JButton buscar_prod = new RoundButton("Buscar", 16);
         buscar_prod.setBounds(20, yPos, 260, 35);
         buscar_prod.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 13));
         buscar_prod.setBackground(new Color(46, 204, 113));
@@ -254,12 +255,12 @@ class Productos {
         ent_cant.setBounds(20, yPos + 20, 120, fieldHeight);
         ent_cant.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
         ent_cant.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(189, 195, 199)),
+            new LineBorder(new Color(189, 195, 199), 1, true),
             javax.swing.BorderFactory.createEmptyBorder(2, 5, 2, 5)));
         panelLateral.add(ent_cant);
         
         // Botón Agregar al Carrito
-        JButton boton_aceptar = new JButton("Agregar");
+        JButton boton_aceptar = new RoundButton("Agregar", 16);
         boton_aceptar.setBounds(150, yPos + 18, 130, 30);
         boton_aceptar.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
         boton_aceptar.setBackground(new Color(52, 152, 219));
@@ -508,7 +509,7 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
     buttonPanel.setOpaque(false); // Hacer el panel transparente
     
     // Botón Eliminar más pequeño
-    JButton boton_eliminar = new JButton("Eliminar");
+    JButton boton_eliminar = new RoundButton("Eliminar", 16);
     boton_eliminar.setBounds(0, 10, 150, 35);
     boton_eliminar.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
     boton_eliminar.setBackground(new Color(231, 76, 60)); // Rojo
@@ -552,7 +553,7 @@ public void insertarEnCarrito(String cedula, String codigoProducto, String canti
     comboMetodoPago.setSelectedIndex(0);
     
     // Botón Pagar más pequeño
-    JButton boton_pagar = new JButton("Pagar");
+    JButton boton_pagar = new RoundButton("Pagar", 16);
     boton_pagar.setBounds(340, 10, 150, 35);
     boton_pagar.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
     boton_pagar.setBackground(new Color(46, 204, 113)); // Verde

@@ -74,12 +74,10 @@ public class Factura {
         infoPanel.setBackground(new Color(245, 247, 250));
 
         // Panel de información del cliente
-        JPanel clientePanel = new JPanel(new BorderLayout());
+        RoundedPanel clientePanel = new RoundedPanel(16);
+        clientePanel.setLayout(new BorderLayout());
         clientePanel.setBackground(Color.WHITE);
-        clientePanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(220, 220, 220)),
-            new EmptyBorder(15, 20, 15, 20)
-        ));
+        clientePanel.setBorder(new EmptyBorder(15, 20, 15, 20));
         
         JLabel clienteTitulo = new JLabel("INFORMACIÓN DEL CLIENTE");
         clienteTitulo.setFont(new Font("Arial", Font.BOLD, 12));
@@ -102,12 +100,10 @@ public class Factura {
         clientePanel.add(clienteInfo, BorderLayout.NORTH);
 
         // Panel de información de factura
-        JPanel facturaPanel = new JPanel(new BorderLayout());
+        RoundedPanel facturaPanel = new RoundedPanel(16);
+        facturaPanel.setLayout(new BorderLayout());
         facturaPanel.setBackground(Color.WHITE);
-        facturaPanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(220, 220, 220)),
-            new EmptyBorder(15, 20, 15, 20)
-        ));
+        facturaPanel.setBorder(new EmptyBorder(15, 20, 15, 20));
         
         JLabel facturaTitulo = new JLabel("INFORMACIÓN DE FACTURA");
         facturaTitulo.setFont(new Font("Arial", Font.BOLD, 12));
@@ -178,12 +174,10 @@ public class Factura {
         ));
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-        JPanel totalesPanel = new JPanel(new BorderLayout());
+        RoundedPanel totalesPanel = new RoundedPanel(16);
+        totalesPanel.setLayout(new BorderLayout());
         totalesPanel.setBackground(Color.WHITE);
-        totalesPanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(220, 220, 220)),
-            new EmptyBorder(15, 20, 15, 20)
-        ));
+        totalesPanel.setBorder(new EmptyBorder(15, 20, 15, 20));
         
         JPanel totalesGrid = new JPanel(new GridLayout(3, 2, 10, 8));
         totalesGrid.setBackground(Color.WHITE);

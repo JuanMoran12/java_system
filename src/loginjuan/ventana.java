@@ -7,6 +7,9 @@ package loginjuan;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.HeadlessException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -26,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -92,26 +96,12 @@ class ventana {
         subtitulo.setForeground(new Color(200, 200, 200));
         panelLateral.add(subtitulo);
         
-        // Tarjeta de inicio de sesión
-        JPanel loginCard = new JPanel();
+        // Tarjeta de inicio de sesión con bordes redondeados
+        RoundedPanel loginCard = new RoundedPanel(24);
         loginCard.setBounds(100, 150, 450, 400);
         loginCard.setBackground(Color.WHITE);
         loginCard.setLayout(null);
-        loginCard.setBorder(javax.swing.BorderFactory.createLineBorder(new Color(230, 230, 230), 1, true));
-        loginCard.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(230, 230, 230)),
-            javax.swing.BorderFactory.createEmptyBorder(20, 30, 30, 30)));
-        
-        // Sombra para la tarjeta
-        loginCard.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(230, 230, 230)),
-            BorderFactory.createEmptyBorder(5, 15, 5, 10)
-        ));
-        loginCard.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createEmptyBorder(0, 15, 5, 10),
-            loginCard.getBorder()
-        ));
-        
+        loginCard.setBorder(BorderFactory.createEmptyBorder(20, 30, 30, 30));
         panelCentral.add(loginCard);
         
         // Título del formulario
@@ -130,9 +120,9 @@ class ventana {
         
         ent.setBounds(30, 95, 390, 45);
         ent.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 15));
-        ent.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(200, 200, 200)),
-            javax.swing.BorderFactory.createEmptyBorder(10, 15, 10, 15)));
+        ent.setBorder(BorderFactory.createCompoundBorder(
+            new LineBorder(new Color(200, 200, 200), 1, true),
+            BorderFactory.createEmptyBorder(10, 15, 10, 15)));
         loginCard.add(ent);
         
         // Campo de contraseña
@@ -145,9 +135,9 @@ class ventana {
         ent2.setBounds(30, 185, 390, 45);
         ent2.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 15));
         ent2.setEchoChar('•');
-        ent2.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(200, 200, 200)),
-            javax.swing.BorderFactory.createEmptyBorder(10, 15, 10, 15)));
+        ent2.setBorder(BorderFactory.createCompoundBorder(
+            new LineBorder(new Color(200, 200, 200), 1, true),
+            BorderFactory.createEmptyBorder(10, 15, 10, 15)));
         loginCard.add(ent2);
         
         // Recordar usuario
@@ -158,13 +148,11 @@ class ventana {
         rememberMe.setFocusPainted(false);
         //loginCard.add(rememberMe);
         
-        JButton LeeButton = new JButton("Iniciar Sesión");
+        RoundButton LeeButton = new RoundButton("Iniciar Sesión", 18);
         LeeButton.setBounds(30, 290, 390, 50);
         LeeButton.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 15));
-        LeeButton.setBackground(new Color(52, 152, 219));
         LeeButton.setForeground(Color.WHITE);
-        LeeButton.setBorderPainted(false);
-        LeeButton.setFocusPainted(false);
+        LeeButton.setBackground(new Color(52, 152, 219));
         LeeButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         
         LeeButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -294,3 +282,56 @@ class ventana {
             ventana3.setVisible(true);
     }
 }
+
+// Panel con esquinas redondeadas reutilizable para una UI más moderna
+class RoundedPanel extends JPanel {
+    private final int cornerRadius;
+
+    public RoundedPanel(int cornerRadius) {
+        super();
+        this.cornerRadius = Math.max(0, cornerRadius);
+        setOpaque(false);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(getBackground());
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), cornerRadius * 2, cornerRadius * 2);
+        g2.dispose();
+        super.paintComponent(g);
+    }
+}
+
+// Botón con fondo redondeado
+class RoundButton extends JButton {
+    private final int cornerRadius;
+
+    public RoundButton(String text, int cornerRadius) {
+        super(text);
+        this.cornerRadius = Math.max(0, cornerRadius);
+        setFocusPainted(false);
+        setBorderPainted(false);
+        setContentAreaFilled(false);
+        setOpaque(false);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(getBackground());
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), cornerRadius, cornerRadius);
+        super.paintComponent(g);
+        g2.dispose();
+    }
+
+    @Override
+    public void paintBorder(Graphics g) {
+        // Sin borde para un look limpio
+    }
+}
+
+
+

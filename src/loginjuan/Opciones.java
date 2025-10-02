@@ -1,9 +1,9 @@
+package loginjuan;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package loginjuan;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -41,13 +42,12 @@ class Opciones {
     
     // Método auxiliar para crear botones del menú
     private JButton createMenuButton(String text, int x, int y, int width, int height) {
-        JButton button = new JButton(text);
+        JButton button = new RoundButton(text, 18);
         button.setBounds(x, y, width, height);
         button.setBackground(new Color(52, 152, 219));
         button.setForeground(Color.WHITE);
         button.setFont(new Font("Arial", Font.BOLD, 15));
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
+        // RoundButton already hides border/focus visuals
         button.setHorizontalAlignment(SwingConstants.LEFT);
         button.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         
@@ -120,22 +120,21 @@ class Opciones {
     
     // Método para agregar cajas de estadísticas
     private void addStatBox(JPanel parent, String title, String value, int x, int y) {
-        JPanel box = new JPanel();
-        box.setBounds(x, y, 140, 50);
+        RoundedPanel box = new RoundedPanel(16);
+        box.setBounds(x, y, 140, 60);
         box.setBackground(Color.WHITE);
-        box.setBorder(BorderFactory.createLineBorder(new Color(230, 236, 240), 1));
         box.setLayout(null);
-        
+
         JLabel titleLabel = new JLabel(title);
-        titleLabel.setBounds(10, 5, 120, 15);
+        titleLabel.setBounds(12, 6, 120, 15);
         titleLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         titleLabel.setForeground(new Color(120, 120, 120));
-        
+
         JLabel valueLabel = new JLabel(value);
-        valueLabel.setBounds(10, 20, 120, 25);
+        valueLabel.setBounds(12, 24, 120, 28);
         valueLabel.setFont(new Font("Arial", Font.BOLD, 20));
         valueLabel.setForeground(new Color(52, 73, 94));
-        
+
         box.add(titleLabel);
         box.add(valueLabel);
         parent.add(box);
@@ -147,12 +146,12 @@ class Opciones {
         opciones.setDefaultCloseOperation(opciones.DISPOSE_ON_CLOSE);
         opciones.setLocationRelativeTo(null);
         opciones.setLayout(null);
-        opciones.getContentPane().setBackground(new Color(245, 247, 250));
+        opciones.getContentPane().setBackground(new Color(243, 246, 250));
 
         // Panel lateral
         JPanel panel_lateral = new JPanel();
         panel_lateral.setBounds(0, 0, 350, 700);
-        panel_lateral.setBackground(new Color(52, 73, 94));
+        panel_lateral.setBackground(new Color(46, 64, 83));
         panel_lateral.setLayout(null);
         
         // Logo y título
@@ -184,18 +183,15 @@ class Opciones {
         // Panel central
         JPanel panel_central = new JPanel();
         panel_central.setBounds(350, 0, 650, 700);
-        panel_central.setBackground(new Color(245, 247, 250));
+        panel_central.setBackground(new Color(243, 246, 250));
         panel_central.setLayout(null);
         
         // Tarjeta de contenido
-        JPanel card = new JPanel();
+        RoundedPanel card = new RoundedPanel(24);
         card.setBounds(50, 50, 550, 600);
         card.setBackground(Color.WHITE);
         card.setLayout(null);
-        card.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(230, 230, 230)),
-            BorderFactory.createEmptyBorder(20, 30, 30, 30)
-        ));
+        card.setBorder(BorderFactory.createEmptyBorder(20, 30, 30, 30));
         
         // Mensaje de bienvenida
         JLabel bienvenida = new JLabel("Panel de Control");
@@ -211,10 +207,9 @@ class Opciones {
         card.add(instrucciones);
         
         // Panel de estadísticas (puedes personalizar esto)
-        JPanel statsPanel = new JPanel();
+        RoundedPanel statsPanel = new RoundedPanel(16);
         statsPanel.setBounds(30, 160, 490, 120);
         statsPanel.setBackground(new Color(245, 249, 252));
-        statsPanel.setBorder(BorderFactory.createLineBorder(new Color(230, 236, 240)));
         statsPanel.setLayout(null);
         
         JLabel statsTitle = new JLabel("Resumen Rápido");
@@ -281,7 +276,7 @@ class Opciones {
         });
         card.add(boton_inventario);
         
-        JButton eliminar = createMenuButton("🗑️ Eliminar Usuario", 30, 470, 490, 50);
+        JButton eliminar = createMenuButton("🗑️ Eliminar Usuario", 30, 530, 490, 50);
         eliminar.setBackground(new Color(231, 76, 60));
         eliminar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -306,7 +301,7 @@ class Opciones {
         // Pie de página
         JPanel footerPanel = new JPanel();
         footerPanel.setBounds(0, 650, 350, 50);
-        footerPanel.setBackground(new Color(45, 62, 80));
+        footerPanel.setBackground(new Color(44, 62, 80));
         footerPanel.setLayout(new java.awt.BorderLayout());
         
         JLabel copyrightLabel = new JLabel(" 2023 Sistema de Gestión - v1.0");

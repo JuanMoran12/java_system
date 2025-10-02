@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
 
 class Clientes {
 
@@ -38,13 +39,11 @@ class Clientes {
 
     // Método auxiliar para crear botones con estilo consistente
     private JButton createButton(String text, int x, int y, int width, int height) {
-        JButton button = new JButton(text);
+        JButton button = new RoundButton(text, 16);
         button.setBounds(x, y, width, height);
         button.setBackground(new Color(52, 152, 219));
         button.setForeground(Color.WHITE);
         button.setFont(new Font("Arial", Font.BOLD, 14));
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
         button.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         
         // Efecto hover
@@ -66,7 +65,7 @@ class Clientes {
         textField.setBounds(x, y, width, height);
         textField.setFont(new Font("Arial", Font.PLAIN, 14));
         textField.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(220, 220, 220)),
+            new LineBorder(new Color(220, 220, 220), 1, true),
             javax.swing.BorderFactory.createEmptyBorder(8, 10, 8, 10)));
         return textField;
     }
@@ -87,12 +86,12 @@ class Clientes {
         ventana5.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         ventana5.setLocationRelativeTo(null);
         ventana5.setLayout(null);
-        ventana5.getContentPane().setBackground(new Color(245, 247, 250));
+        ventana5.getContentPane().setBackground(new Color(243, 246, 250));
         
         // Panel lateral
         JPanel panelLateral = new JPanel();
         panelLateral.setBounds(0, 0, 350, 700);
-        panelLateral.setBackground(new Color(52, 73, 94));
+        panelLateral.setBackground(new Color(46, 64, 83));
         panelLateral.setLayout(null);
         
         // Logo y título
@@ -123,18 +122,15 @@ class Clientes {
         // Panel central
         JPanel panelCentral = new JPanel();
         panelCentral.setBounds(350, 0, 650, 700);
-        panelCentral.setBackground(new Color(245, 247, 250));
+        panelCentral.setBackground(new Color(243, 246, 250));
         panelCentral.setLayout(null);
         
         // Tarjeta de contenido
-        JPanel card = new JPanel();
+        RoundedPanel card = new RoundedPanel(24);
         card.setBounds(50, 50, 550, 600);
         card.setBackground(Color.WHITE);
         card.setLayout(null);
-        card.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new Color(230, 230, 230)),
-            javax.swing.BorderFactory.createEmptyBorder(20, 30, 30, 30)
-        ));
+        card.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 30, 30, 30));
         
         // Título de la sección
         JLabel tituloClientes = new JLabel("Gestión de Clientes");
@@ -144,10 +140,9 @@ class Clientes {
         card.add(tituloClientes);
         
         // Sección de búsqueda
-        JPanel searchPanel = new JPanel();
+        RoundedPanel searchPanel = new RoundedPanel(16);
         searchPanel.setBounds(30, 80, 490, 60);
         searchPanel.setBackground(new Color(245, 249, 252));
-        searchPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new Color(230, 236, 240)));
         searchPanel.setLayout(null);
         
         JLabel etq_buscar = createLabel("Buscar por cédula:", 20, 15, 150, 30, Font.PLAIN);
@@ -162,10 +157,9 @@ class Clientes {
         card.add(searchPanel);
         
         // Formulario de cliente
-        JPanel formPanel = new JPanel();
+        RoundedPanel formPanel = new RoundedPanel(16);
         formPanel.setBounds(30, 170, 490, 380);
         formPanel.setBackground(Color.WHITE);
-        formPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new Color(230, 236, 240)));
         formPanel.setLayout(null);
         
         JLabel etq_form_title = new JLabel("Información del Cliente");
