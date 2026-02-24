@@ -20,12 +20,12 @@ Sistema de Planificación de Recursos Empresariales (ERP) desarrollado en Java c
 ### Interfaz Principal
 | Login | Dashboard | Clientes |
 |-------|-----------|----------|
-| ![Login](docs/I1.png) | ![Dashboard](docs/I2.png) | ![Clientes](docs/I3.png) |
+| ![Login](docs/i1.png) | ![Dashboard](docs/i2.png) | ![Clientes](docs/i3.png) |
 
 ### Módulos de Gestión
 | Ventas | Productos | Logs |
 |--------|-----------|------|
-| ![Ventas](docs/I4.png) | ![Productos](docs/I5.png) | ![Logs](docs/i7.png) |
+| ![Ventas](docs/i4.png) | ![Productos](docs/i5.png) | ![Logs](docs/i7.png) |
 
 ## 🛠️ Tecnologías Utilizadas
 
@@ -119,14 +119,6 @@ java_system/
 ├── logo_w.png / logo_b.png        # Logos del sistema
 ├── .gitignore
 └── README.md
-```
-
-## 🔑 Credenciales por Defecto
-
-Crear usuario administrador en la tabla `login`:
-```sql
-INSERT INTO login (usuario, clave, rol) VALUES ('admin', 'admin123', 'admin');
-INSERT INTO login (usuario, clave, rol) VALUES ('vendedor', 'vendedor123', 'vendedor');
 ```
 
 ## 👥 Roles de Usuario
