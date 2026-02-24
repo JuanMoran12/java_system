@@ -1,0 +1,131 @@
+# ===========================
+# Java Compiled Files
+# ===========================
+*.class
+*.jar
+!sqlite-jdbc-3.50.3.0.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# ===========================
+# Logs
+# ===========================
+*.log
+hs_err_pid*
+
+# ===========================
+# IDE - NetBeans
+# ===========================
+/nbproject/private/
+/nbproject/build-impl.xml~
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# ===========================
+# IDE - IntelliJ IDEA
+# ===========================
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# ===========================
+# IDE - Eclipse
+# ===========================
+.settings/
+.classpath
+.project
+.metadata/
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.loadpath
+.recommenders
+
+# ===========================
+# IDE - VS Code
+# ===========================
+.vscode/
+*.code-workspace
+
+# ===========================
+# Build Directories
+# ===========================
+build/
+target/
+dist/
+
+# ===========================
+# Database Files
+# ===========================
+*.db
+*.sqlite
+*.sqlite3
+*.sqbpro
+ventasdb.db
+
+# ===========================
+# OS Generated Files
+# ===========================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ===========================
+# Configuration Files
+# ===========================
+*.properties
+*.prefs
+config.local.*
+
+# ===========================
+# Documentation (Internal)
+# ===========================
+diccionario/
+diccionario_datos.md
+diagrama.png
+
+# ===========================
+# Kiro AI Assistant
+# ===========================
+# IMPORTANTE: Los skills y configuraciones de Kiro son personales
+# y contienen preferencias de desarrollo específicas del usuario.
+# No deben compartirse en el repositorio público.
+.kiro/
+.kiro/skills/
+.kiro/steering/
+.kiro/settings/
+
+# ===========================
+# Temporary Files
+# ===========================
+*.tmp
+*.temp
+*.cache
